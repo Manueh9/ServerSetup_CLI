@@ -1,78 +1,51 @@
 import argparse
+from commands import MODULES
+from commands import system as cmd_system
+from commands import ssh    as cmd_ssh
 
-from modules.system import update_system, upgrade_system, full_upgrade_system
-from modules.ssh import install_ssh, enable_ssh, change_ssh_port, restart_ssh, check_ssh_status
-
-
-PINK = "\033[95m"
+PINK  = "\033[95m"
+CYAN  = "\033[96m"
 RESET = "\033[0m"
 
+def print_banner():
+    print(f"""
+{CYAN}╔══════════════════════════════════╗
+║      Server Setup CLI v1.0       ║
+╚══════════════════════════════════╝{RESET}
+""")
 
-def full_setup():
-    print(f"\n{PINK}[STEP]{RESET} Running full system setup...\n")
+def run_all(args):
+    print(f"\n{PINK}[ALL]{RESET} Starting full server setup...\n")
 
-    update_system()
-    upgrade_system()
-    full_upgrade_system()
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE 1 — System Update{RESET}")
+    print(f"{PINK}{'─'*40}{RESET}")
+    cmd_system.run_all()
 
-def create_parser():
-    parser = argparse.ArgumentParser(description="Server Setup CLI")
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE 2 — SSH Setup{RESET}")
+    print(f"{PINK}{'─'*40}{RESET}")
+    cmd_ssh.run_all(port=args.ssh_port)
 
-    group = parser.add_mutually_exclusive_group()
-
-    group.add_argument("--all", action="store_true", help="Run full setup")
-
-    # SYSTEM
-    group.add_argument("--update", action="store_true", help="Run apt update")
-    group.add_argument("--upgrade", action="store_true", help="Run apt upgrade")
-    group.add_argument("--full-upgrade", action="store_true", help="Run apt full-upgrade")
-
-    # SSH
-    group.add_argument("--ssh", action="store_true", help="Run apt install -y openssh-server")
-    parser.add_argument("--ssh-port", type=int, help="SSH listening port")
-    return parser
-
+    print(f"\n{CYAN}[DONE]{RESET} Full setup completed.\n")
 
 def main():
-    parser = create_parser()
+    print_banner()
+
+    parser = argparse.ArgumentParser(description="Server Setup CLI")
+    parser.add_argument("--all", action="store_true", help="Run full setup (all phases)")
+
+    for module in MODULES:
+        module.register_args(parser)
+
     args = parser.parse_args()
-
+    
     if args.all:
-        full_setup()
-        
-    if args.update:
-        print(f"\n{PINK}[STEP]{RESET} Running apt update...\n")
-        update_system()
-        
-    if args.upgrade:
-        print(f"\n{PINK}[STEP]{RESET} Running apt upgrade...\n")
-        upgrade_system()
-
-    if args.full_upgrade:
-        print(f"\n{PINK}[STEP]{RESET} Running apt full-upgrade...\n")
-        full_upgrade_system()
-
-
-    if args.ssh_port and not args.ssh:
-        print("[ERROR] --ssh-port requires --ssh")
+        run_all(args)
         return
-    if args.ssh:
-        print(f"\n{PINK}[STEP]{RESET} Installing OpenSSH Server...\n")
-        install_ssh()
 
-        print(f"\n{PINK}[STEP]{RESET} Enabling SSH service...\n")
-        enable_ssh()
-
-        if args.ssh_port:
-            print(f"\n{PINK}[STEP]{RESET} Changing SSH port to {args.ssh_port}...\n")
-            change_ssh_port(args.ssh_port)
-
-            print(f"\n{PINK}[STEP]{RESET} Restarting SSH service...\n")
-            restart_ssh()
-
-        print(f"\n{PINK}[STEP]{RESET} Checking SSH status...\n")
-        check_ssh_status()
-
+    for module in MODULES:
+        module.handle(args)
 
 if __name__ == "__main__":
     main()
