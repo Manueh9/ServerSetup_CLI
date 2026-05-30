@@ -1,21 +1,9 @@
-from utils import run_command
+from utils import run_command, GREEN, YELLOW, RED, CYAN, PINK, RESET, ok, info, warn, error, success
+
 import subprocess
 import re
 
 SSH_CONFIG_FILE = "/etc/ssh/sshd_config"
-
-GREEN  = "\033[92m"
-YELLOW = "\033[93m"
-RED    = "\033[91m"
-CYAN   = "\033[96m"
-PINK   = "\033[95m"
-RESET  = "\033[0m"
-
-def ok(msg):      print(f"{GREEN}[OK]{RESET} {msg}")
-def info(msg):    print(f"{CYAN}[INFO]{RESET} {msg}")
-def warn(msg):    print(f"{YELLOW}[WARNING]{RESET} {msg}")
-def error(msg):   print(f"{RED}[ERROR]{RESET} {msg}")
-def success(msg): print(f"{GREEN}[SUCCESS]{RESET} {msg}")
 
 
 def install_ssh():
@@ -93,6 +81,7 @@ def check_ssh_status():
         capture_output=True, text=True
     )
     status = result.stdout.strip()
+    
     if status == "active":
         ok(f"SSH service: {status}")
     else:

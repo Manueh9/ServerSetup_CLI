@@ -1,3 +1,3 @@
-from commands import system, ssh
+from commands import system, ssh, git
 
-MODULES = [system, ssh]
+MODULES = [system, ssh, git]

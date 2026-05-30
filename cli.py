@@ -1,11 +1,12 @@
 import argparse
+from utils import CYAN, PINK, RESET
+
 from commands import MODULES
 from commands import system as cmd_system
 from commands import ssh    as cmd_ssh
+from commands import git    as cmd_git
 
-PINK  = "\033[95m"
-CYAN  = "\033[96m"
-RESET = "\033[0m"
+
 
 def print_banner():
     print(f"""
@@ -26,6 +27,10 @@ def run_all(args):
     print(f"{PINK} PHASE 2 — SSH Setup{RESET}")
     print(f"{PINK}{'─'*40}{RESET}")
     cmd_ssh.run_all(port=args.ssh_port)
+
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE3 — GIT Setup{RESET}")
+    cmd_git.run_all()
 
     print(f"\n{CYAN}[DONE]{RESET} Full setup completed.\n")
 

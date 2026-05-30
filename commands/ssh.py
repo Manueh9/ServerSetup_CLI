@@ -1,8 +1,5 @@
 from modules.ssh import install_ssh, enable_ssh, change_ssh_port, restart_ssh, check_ssh_status
-
-PINK  = "\033[95m"
-RED   = "\033[91m"
-RESET = "\033[0m"
+from utils import PINK, RED, RESET, step
 
 DEFAULT_PORT = 22
 
@@ -10,9 +7,6 @@ def register_args(parser):
     group = parser.add_argument_group("SSH")
     group.add_argument("--ssh",      action="store_true", help="Install and configure OpenSSH")
     group.add_argument("--ssh-port", type=int,            help="SSH listening port")
-
-def step(msg):
-    print(f"\n{PINK}[STEP]{RESET} {msg}\n")
 
 def handle(args):
     if args.ssh_port and not args.ssh:

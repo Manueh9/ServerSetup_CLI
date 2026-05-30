@@ -1,7 +1,6 @@
 from modules.system import update_system, upgrade_system, full_upgrade_system
+from utils import PINK, RESET
 
-PINK  = "\033[95m"
-RESET = "\033[0m"
 
 def register_args(parser):
     group = parser.add_argument_group("System")
