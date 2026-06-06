@@ -2,9 +2,10 @@ import argparse
 from utils import CYAN, PINK, RESET
 
 from commands import MODULES
-from commands import system as cmd_system
-from commands import ssh    as cmd_ssh
-from commands import git    as cmd_git
+from commands import system              as cmd_system
+from commands import ssh                 as cmd_ssh
+from commands import git                 as cmd_git
+from commands import command_line_custom as cmd_prompt
 
 
 
@@ -31,6 +32,11 @@ def run_all(args):
     print(f"{PINK}{'─'*40}{RESET}")
     print(f"{PINK} PHASE3 — GIT Setup{RESET}")
     cmd_git.run_all()
+
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE 4 — Command Line Customization{RESET}")
+    print(f"{PINK}{'─'*40}{RESET}")
+    cmd_prompt.run_all()
 
     print(f"\n{CYAN}[DONE]{RESET} Full setup completed.\n")
 
