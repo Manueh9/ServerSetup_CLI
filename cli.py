@@ -8,7 +8,7 @@ from commands import git                 as cmd_git
 from commands import command_line_custom as cmd_prompt
 from commands import ufw                 as cmd_ufw
 from commands import fail2ban            as cmd_fail2ban
-
+from commands import hostname            as cmd_hostname
 
 
 def print_banner():
@@ -50,6 +50,11 @@ def run_all(args):
     print(f"{PINK} PHASE 7 — fail2ban{RESET}")
     print(f"{PINK}{'─'*40}{RESET}")
     cmd_fail2ban.run_all()
+
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE 8 — Hostname{RESET}")
+    print(f"{PINK}{'─'*40}{RESET}")
+    cmd_hostname.run_all()
 
     print(f"\n{CYAN}[DONE]{RESET} Full setup completed.\n")
 
