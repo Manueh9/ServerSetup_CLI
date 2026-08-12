@@ -6,6 +6,7 @@ from commands import system              as cmd_system
 from commands import ssh                 as cmd_ssh
 from commands import git                 as cmd_git
 from commands import command_line_custom as cmd_prompt
+from commands import ufw                 as cmd_ufw
 
 
 
@@ -37,6 +38,12 @@ def run_all(args):
     print(f"{PINK} PHASE 4 — Command Line Customization{RESET}")
     print(f"{PINK}{'─'*40}{RESET}")
     cmd_prompt.run_all()
+
+
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE 6 — Firewall (UFW){RESET}")
+    print(f"{PINK}{'─'*40}{RESET}")
+    cmd_ufw.run_all()
 
     print(f"\n{CYAN}[DONE]{RESET} Full setup completed.\n")
 
