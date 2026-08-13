@@ -9,6 +9,7 @@ from commands import command_line_custom as cmd_prompt
 from commands import ufw                 as cmd_ufw
 from commands import fail2ban            as cmd_fail2ban
 from commands import hostname            as cmd_hostname
+from commands import users               as cmd_users
 
 
 def print_banner():
@@ -55,6 +56,11 @@ def run_all(args):
     print(f"{PINK} PHASE 8 — Hostname{RESET}")
     print(f"{PINK}{'─'*40}{RESET}")
     cmd_hostname.run_all()
+
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE 9 — Users{RESET}")
+    print(f"{PINK}{'─'*40}{RESET}")
+    cmd_users.run_all()
 
     print(f"\n{CYAN}[DONE]{RESET} Full setup completed.\n")
 
