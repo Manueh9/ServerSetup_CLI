@@ -4,16 +4,19 @@
 ![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-CLI en Python para automatizar la configuración inicial de servidores Linux (Ubuntu Server).
-Reduce el tiempo de setup de un servidor nuevo de horas a minutos, con configuración
-reproducible y sin pasos manuales olvidados.
+CLI en Python para automatizar la configuración y el hardening inicial de servidores
+Linux (Ubuntu Server). Reduce el tiempo de puesta a punto de un servidor nuevo de
+horas a minutos, con configuración reproducible, validada y sin pasos manuales
+olvidados.
 
 ## El problema que resuelve
 
-Configurar un servidor Linux desde cero implica repetir siempre los mismos pasos:
-actualizar el sistema, instalar y asegurar SSH, configurar Git, personalizar el
-prompt, ajustar la timezone... Hacerlo a mano es lento y propenso a errores.
-ServerSetup CLI automatiza ese proceso completo con un único comando.
+Preparar un servidor Linux desde cero implica repetir siempre los mismos pasos:
+actualizar el sistema, instalar y asegurar SSH, configurar Git, crear usuarios con
+permisos, levantar un firewall, proteger contra fuerza bruta, ajustar la zona
+horaria... Hacerlo a mano es lento y propenso a errores. ServerSetup CLI empaqueta
+todo ese proceso en comandos claros y en un flujo `--all` que deja el servidor
+listo en una sola ejecución.
 
 ## Instalación
 
@@ -24,80 +27,162 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Uso
+## Setup completo
 
-### Setup completo del servidor
 ```bash
 sudo python3 cli.py --all
 ```
 
-### Sistema
+El flujo `--all` ejecuta por fases y de forma idempotente (no repite lo que ya está
+hecho). Las fases con configuración específica del usuario (hostname, usuarios, swap)
+son interactivas: preguntan antes de actuar y continúan si respondes que no.
+
+## Módulos
+
+### 1. Sistema
 ```bash
-python3 cli.py --update
-python3 cli.py --upgrade
-python3 cli.py --full-upgrade
+python3 cli.py --update          # apt update
+python3 cli.py --upgrade         # apt upgrade -y
+python3 cli.py --full-upgrade    # apt full-upgrade -y
 ```
 
-### SSH
+### 2. SSH
 ```bash
-sudo python3 cli.py --ssh
-sudo python3 cli.py --ssh --ssh-port 2222
+sudo python3 cli.py --ssh                    # instalar, habilitar y verificar
+sudo python3 cli.py --ssh --ssh-port 2222    # instalar y cambiar el puerto
 ```
 
-### Git
+### 3. Git
 ```bash
 python3 cli.py --install-git
-python3 cli.py --git-config --git-name "Tu Nombre" --git-email "tu@email.com"
-python3 cli.py --git-config --git-editor nano --git-branch main --git-aliases
-python3 cli.py --git-ssh --git-email "tu@email.com"
+python3 cli.py --git-config --git-name "Nombre" --git-email "mail@ejemplo.com"
+python3 cli.py --git-config --git-scope system --git-name "..." --git-email "..."
+python3 cli.py --git-config --git-editor nano --git-branch main --git-pull rebase
+python3 cli.py --git-aliases
+python3 cli.py --git-ssh --git-email "mail@ejemplo.com"
 python3 cli.py --git-show
 ```
 
-### Personalización del prompt
+### 4. Personalización del prompt
 ```bash
-python3 cli.py --show-branch --show-time --show-venv
-python3 cli.py --prompt-status
+python3 cli.py --show-branch     # rama git + estado del repo
+python3 cli.py --show-time       # timestamp [HH:MM:SS]
+python3 cli.py --show-venv       # nombre del virtualenv activo
+python3 cli.py --prompt-status   # ver qué personalizaciones están activas
+python3 cli.py --remove-branch   # (y --remove-time, --remove-venv)
 ```
 
-### Timezone
+### 5. Timezone
 ```bash
 python3 cli.py --show-timezone
 python3 cli.py --list-timezones-region Europe
 sudo python3 cli.py --set-timezone Europe/Madrid
-sudo python3 cli.py --enable-ntp
+sudo python3 cli.py --enable-ntp        # sincronización automática del reloj
+python3 cli.py --show-ntp
 ```
+
+### 6. UFW (firewall)
+```bash
+sudo python3 cli.py --install-ufw
+sudo python3 cli.py --allow-port 22 --protocol tcp
+sudo python3 cli.py --enable-ufw
+sudo python3 cli.py --ufw-status --ufw-verbose
+sudo python3 cli.py --deny-port 8080
+sudo python3 cli.py --delete-rule 22
+```
+
+### 7. fail2ban (protección contra fuerza bruta)
+```bash
+sudo python3 cli.py --install-fail2ban
+sudo python3 cli.py --protect-ssh --max-retry 3 --ban-time 30m
+sudo python3 cli.py --enable-fail2ban
+sudo python3 cli.py --fail2ban-status --jail sshd
+```
+
+### 8. Hostname
+```bash
+python3 cli.py --show-hostname
+sudo python3 cli.py --set-hostname web-prod-01
+```
+
+### 9. Usuarios
+```bash
+sudo python3 cli.py --create-user devuser --user-password "..."
+sudo python3 cli.py --grant-sudo devuser
+sudo python3 cli.py --add-ssh-key devuser --ssh-key "ssh-ed25519 AAAA..."
+sudo python3 cli.py --list-users
+sudo python3 cli.py --user-info devuser
+sudo python3 cli.py --delete-user devuser --keep-home
+```
+
+### 10. Cron
+```bash
+python3 cli.py --add-cron "0 3 * * *" --cron-command "/home/devuser/backup.sh" --cron-comment "Daily backup"
+python3 cli.py --list-cron
+python3 cli.py --list-cron-cli          # solo tareas gestionadas por la CLI
+python3 cli.py --remove-cron 1
+python3 cli.py --remove-cron-cli
+```
+
+### 11. Swap
+```bash
+sudo python3 cli.py --create-swap          # 2G por defecto
+sudo python3 cli.py --create-swap 1G
+sudo python3 cli.py --swap-status
+sudo python3 cli.py --swappiness 10        # recomendado para servidores
+sudo python3 cli.py --disable-swap
+sudo python3 cli.py --remove-swap
+```
+
+## Qué incluye el flujo `--all`
+
+| Fase | Módulo | Comportamiento |
+|------|--------|----------------|
+| 1 | Sistema | Actualiza paquetes |
+| 2 | SSH | Instala y asegura SSH |
+| 3 | Git | Instala + configuración base |
+| 4 | Prompt | Aplica personalizaciones |
+| 5 | UFW | Instala, permite SSH y activa |
+| 6 | fail2ban | Instala y protege SSH |
+| 7 | Hostname | Pregunta si cambiar (interactivo) |
+| 8 | Usuarios | Pregunta si crear uno (interactivo) |
+| 9 | Swap | Pregunta si crear (interactivo) |
+
+Timezone se gestiona de forma manual, ya que la zona horaria es demasiado específica
+para asumir un valor por defecto.
 
 ## Arquitectura
 
 ```
-cli.py                  → punto de entrada, orquesta --all
+cli.py                  → punto de entrada, orquesta --all por fases
 commands/                → parsea argumentos y decide qué ejecutar
   ├── system.py
   ├── ssh.py
   ├── git.py
   ├── command_line_custom.py
-  └── timezone.py
+  ├── timezone.py
+  ├── ufw.py
+  ├── fail2ban.py
+  ├── hostname.py
+  ├── users.py
+  ├── cron.py
+  └── swap.py
 modules/                 → lógica real, ejecuta comandos del sistema
-  ├── system.py
-  ├── ssh.py
-  ├── git.py
-  ├── command_line_custom.py
-  └── timezone.py
-utils.py                 → helpers compartidos (colores, run_command, detección de usuario real)
+  └── (un archivo por cada comando anterior)
+utils.py                 → helpers compartidos (colores, run_command,
+                           detección del usuario real tras sudo)
 tests/                   → suite de tests con pytest + mocks
 ```
 
-Cada módulo tiene una única responsabilidad. `cli.py` no sabe qué hace SSH ni Git;
+Cada capa tiene una única responsabilidad. `cli.py` no sabe qué hace cada módulo;
 `commands/` no sabe cómo se ejecutan los comandos del sistema; `modules/` no sabe
-nada de argparse ni de la CLI. Añadir un módulo nuevo no requiere tocar el resto.
+nada de argparse ni de la CLI. Añadir un módulo nuevo consiste en crear su par
+`commands/x.py` + `modules/x.py` y registrarlo en `commands/__init__.py`, sin tocar
+el resto.
 
-## Módulos disponibles
-
-1. **Sistema** — apt update / upgrade / full-upgrade
-2. **SSH** — instalación, cambio de puerto, verificación de estado
-3. **Git** — instalación, configuración de usuario, aliases, claves SSH
-4. **Prompt** — rama git, timestamp, nombre de virtualenv en la terminal
-5. **Timezone** — cambio de zona horaria y sincronización NTP
+Un detalle de diseño importante: cuando la CLI se ejecuta con `sudo`, los módulos
+que configuran cosas a nivel de usuario (Git, Cron) detectan el usuario real
+mediante `SUDO_USER` y actúan sobre su configuración, no sobre la de root.
 
 ## Tests
 
@@ -106,16 +191,17 @@ pytest tests/ -v
 pytest tests/ -v --cov=modules --cov-report=term-missing
 ```
 
-Los tests mockean todas las llamadas al sistema (`apt`, `systemctl`, `git config`...)
-para poder ejecutarse en cualquier máquina sin necesidad de privilegios root ni
-modificar el sistema real.
+Los tests mockean todas las llamadas al sistema (`apt`, `systemctl`, `git config`,
+`crontab`, `swapon`...) para poder ejecutarse en cualquier máquina sin privilegios
+root y sin modificar el sistema real. La lógica pura (validación de puertos,
+hostnames, esquemas cron, parseo de archivos de configuración) se testea de forma
+directa. El CI en GitHub Actions ejecuta la suite completa en Python 3.11 y 3.12
+en cada push a `main` y `develop`.
 
-## Roadmap
+## Seguridad
 
-- [ ] UFW — gestión de firewall
-- [ ] fail2ban — protección contra fuerza bruta
-- [ ] Gestión de usuarios y permisos sudo
-- [ ] PostgreSQL — instalación y configuración
-
----
-*Proyecto de la Fase 1 — Arquitectura y Sistemas*
+- **UFW**: el flujo `--all` permite el puerto SSH *antes* de activar el firewall,
+  para no bloquear el acceso remoto al servidor.
+- **Puertos privilegiados**: se avisa al abrir puertos por debajo de 1024.
+- **Validación**: usernames, hostnames, puertos, tamaños de swap y esquemas cron
+  se validan antes de aplicarse.
