@@ -10,6 +10,7 @@ from commands import ufw                 as cmd_ufw
 from commands import fail2ban            as cmd_fail2ban
 from commands import hostname            as cmd_hostname
 from commands import users               as cmd_users
+from commands import swap                as cmd_swap
 
 
 def print_banner():
@@ -61,6 +62,11 @@ def run_all(args):
     print(f"{PINK} PHASE 9 — Users{RESET}")
     print(f"{PINK}{'─'*40}{RESET}")
     cmd_users.run_all()
+
+    print(f"{PINK}{'─'*40}{RESET}")
+    print(f"{PINK} PHASE 10 — Swap{RESET}")
+    print(f"{PINK}{'─'*40}{RESET}")
+    cmd_swap.run_all()
 
     print(f"\n{CYAN}[DONE]{RESET} Full setup completed.\n")
 
