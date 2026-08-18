@@ -4,6 +4,8 @@
 ![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+🇪🇸 Español · [🇬🇧 English](README.en.md)
+
 CLI en Python para automatizar la configuración y el hardening inicial de servidores
 Linux (Ubuntu Server). Reduce el tiempo de puesta a punto de un servidor nuevo de
 horas a minutos, con configuración reproducible, validada y sin pasos manuales
@@ -35,7 +37,38 @@ sudo python3 cli.py --all
 
 El flujo `--all` ejecuta por fases y de forma idempotente (no repite lo que ya está
 hecho). Las fases con configuración específica del usuario (hostname, usuarios, swap)
-son interactivas: preguntan antes de actuar y continúan si respondes que no.
+son interactivas: preguntan antes de actuar y continúan si respondes que no. Cada
+fase se muestra en un panel numerado (`PHASE 1/10`, `PHASE 2/10`...) y queda separada
+de la siguiente por una línea divisoria, para poder seguir el progreso de un vistazo.
+
+## Interfaz
+
+Toda la salida está construida con [Rich](https://github.com/Textualize/rich):
+
+- **Ejecución de comandos**: mientras corre un comando del sistema se muestra un
+  spinner animado con el comando en gris; al terminar se reemplaza en el sitio por
+  un `✔` verde o un `✘` rojo (con el `stderr` debajo si falló).
+- **Estados** (`--swap-status`, `--ufw-status`, `--fail2ban-status`, `--show-ntp`):
+  se muestran como tablas clave/valor en vez de líneas de texto sueltas.
+- **Listados** (`--list-users`, `--list-cron`, reglas de `--ufw-status`): se
+  muestran como tablas con columnas.
+- **Uso de swap**: `--swap-status` incluye una barra de progreso coloreada
+  (verde/amarillo/rojo según el porcentaje usado).
+- **Mensajes**: `✔` éxito, `ℹ` información, `⚠` aviso, `✘` error — consistentes en
+  todos los módulos.
+
+## Ayuda
+
+```bash
+python3 cli.py --help            # resumen de los 11 módulos disponibles
+python3 cli.py --help ssh        # todos los flags de un módulo concreto
+python3 cli.py --help git
+```
+
+`--help` sin argumentos muestra solo la lista de módulos con una descripción de una
+línea cada uno, en vez de volcar los ~70 flags de golpe. Para ver el detalle
+completo de un módulo (todos sus flags con su descripción) se pide explícitamente
+con `--help <módulo>`.
 
 ## Módulos
 
@@ -58,8 +91,7 @@ python3 cli.py --install-git
 python3 cli.py --git-config --git-name "Nombre" --git-email "mail@ejemplo.com"
 python3 cli.py --git-config --git-scope system --git-name "..." --git-email "..."
 python3 cli.py --git-config --git-editor nano --git-branch main --git-pull rebase
-python3 cli.py --git-aliases
-python3 cli.py --git-ssh --git-email "mail@ejemplo.com"
+python3 cli.py --git-ssh --git-email "mail@ejemplo.com" --ssh-key-type ed25519
 python3 cli.py --git-show
 ```
 
@@ -109,6 +141,7 @@ sudo python3 cli.py --set-hostname web-prod-01
 ```bash
 sudo python3 cli.py --create-user devuser --user-password "..."
 sudo python3 cli.py --grant-sudo devuser
+sudo python3 cli.py --revoke-sudo devuser
 sudo python3 cli.py --add-ssh-key devuser --ssh-key "ssh-ed25519 AAAA..."
 sudo python3 cli.py --list-users
 sudo python3 cli.py --user-info devuser
@@ -122,6 +155,7 @@ python3 cli.py --list-cron
 python3 cli.py --list-cron-cli          # solo tareas gestionadas por la CLI
 python3 cli.py --remove-cron 1
 python3 cli.py --remove-cron-cli
+python3 cli.py --clear-cron             # elimina TODAS las tareas, con cuidado
 ```
 
 ### 11. Swap
@@ -148,13 +182,15 @@ sudo python3 cli.py --remove-swap
 | 8 | Usuarios | Pregunta si crear uno (interactivo) |
 | 9 | Swap | Pregunta si crear (interactivo) |
 
-Timezone se gestiona de forma manual, ya que la zona horaria es demasiado específica
-para asumir un valor por defecto.
+Timezone y Cron se gestionan de forma manual: la zona horaria es demasiado
+específica para asumir un valor por defecto, y las tareas cron son demasiado
+particulares como para automatizarlas dentro de `--all`.
 
 ## Arquitectura
 
 ```
-cli.py                  → punto de entrada, orquesta --all por fases
+cli.py                  → punto de entrada, orquesta --all por fases y
+                           resuelve --help (resumen + detalle por módulo)
 commands/                → parsea argumentos y decide qué ejecutar
   ├── system.py
   ├── ssh.py
@@ -169,8 +205,10 @@ commands/                → parsea argumentos y decide qué ejecutar
   └── swap.py
 modules/                 → lógica real, ejecuta comandos del sistema
   └── (un archivo por cada comando anterior)
-utils.py                 → helpers compartidos (colores, run_command,
-                           detección del usuario real tras sudo)
+utils.py                 → helpers compartidos basados en Rich (mensajes con
+                           iconos, tablas de estado/listados, barra de uso,
+                           spinner de ejecución, detección del usuario real
+                           tras sudo)
 tests/                   → suite de tests con pytest + mocks
 ```
 
