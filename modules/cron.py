@@ -1,4 +1,4 @@
-from utils import ok, warn, error, info, success, step, get_real_user
+from utils import ok, warn, error, success, step, get_real_user, data_table
 import subprocess
 import re
 
@@ -72,15 +72,20 @@ def list_tasks(only_cli_managed: bool = False) -> list[str]:
 
 def show_tasks(only_cli_managed: bool = False):
     lines = list_tasks(only_cli_managed)
+    title = f"Cron Tasks{' (CLI-managed)' if only_cli_managed else ''}"
 
-    print()
-    if not lines:
-        info("No cron tasks found" + (" (managed by this CLI)" if only_cli_managed else ""))
-    else:
-        info(f"Cron tasks{' (managed by this CLI)' if only_cli_managed else ''}:")
-        for i, line in enumerate(lines, 1):
-            print(f"  [{i}] {line}")
-    print()
+    rows = []
+    for i, line in enumerate(lines, 1):
+        parts = line.split(None, 5)
+        if len(parts) >= 6:
+            schedule = " ".join(parts[:5])
+            command = parts[5]
+        else:
+            schedule = "-"
+            command = line
+        rows.append([i, schedule, command])
+
+    data_table(title, ["#", "Schedule", "Command"], rows)
 
 def remove_task(index: int) -> bool:
     """

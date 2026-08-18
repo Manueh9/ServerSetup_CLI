@@ -1,5 +1,6 @@
-from utils import run_command, ok, warn, error, info, success, step
+from utils import run_command, ok, warn, error, info, success, step, status_table, data_table
 import subprocess
+import re
 
 def is_ufw_installed() -> bool:
     result = subprocess.run(["which", "ufw"], capture_output=True, text=True)
@@ -61,6 +62,34 @@ def show_status(verbose: bool = False):
     if verbose:
         cmd.append("verbose")
     result = subprocess.run(cmd, capture_output=True, text=True)
-    print()
-    print(result.stdout.strip())
-    print()
+    lines = [l for l in result.stdout.strip().splitlines() if l.strip()]
+
+    if not lines:
+        status_table("UFW Status", [("State", "unknown")])
+        return
+
+    rows = []
+    rule_lines = []
+    in_rules = False
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("To") and "Action" in stripped and "From" in stripped:
+            in_rules = True
+            continue
+        if stripped.startswith("--") and "------" in stripped:
+            continue
+        if in_rules:
+            rule_lines.append(stripped)
+        elif ":" in stripped:
+            key, _, value = stripped.partition(":")
+            rows.append((key.strip(), value.strip()))
+        else:
+            rows.append(("Info", stripped))
+
+    status_table(f"UFW Status{' (Verbose)' if verbose else ''}", rows)
+
+    if rule_lines:
+        rule_rows = [re.split(r"\s{2,}", l) for l in rule_lines]
+        data_table("Firewall Rules", ["To", "Action", "From"], rule_rows)
+    else:
+        info("No firewall rules configured")

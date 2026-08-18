@@ -1,5 +1,5 @@
 import os
-from utils import ok, info, error, success, step, warn, get_real_user, CYAN, RESET
+from utils import ok, info, error, success, step, warn, get_real_user, console
 
 PROMPT_BLOCK_START = "# === PROMPT CONFIGURED BY SERVERSETUP_CLI ==="
 PROMPT_BLOCK_END   = "# ============================================="
@@ -39,7 +39,7 @@ def _block_exists(content: str) -> bool:
     return PROMPT_BLOCK_START in content
 
 def _reload_hint():
-    print(f"   Run: {CYAN}source ~/.bashrc{RESET}")
+    console.print("   Run: [cyan]source ~/.bashrc[/cyan]")
 
 # ── Read current state ────────────────────────────────────────────
 

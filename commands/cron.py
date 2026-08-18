@@ -2,7 +2,7 @@ from modules.cron import (
     add_task, show_tasks, remove_task,
     remove_all_cli_tasks, clear_all_tasks,
 )
-from utils import step, RED, RESET
+from utils import step, error
 
 def register_args(parser):
     group = parser.add_argument_group("Cron")
@@ -27,7 +27,7 @@ def register_args(parser):
 def handle(args):
     if args.add_cron:
         if not args.cron_command:
-            print(f"{RED}[ERROR]{RESET} --add-cron requires --cron-command")
+            error("--add-cron requires --cron-command")
             return
         step(f"Adding cron task: {args.add_cron} {args.cron_command}")
         add_task(args.add_cron, args.cron_command, args.cron_comment)
