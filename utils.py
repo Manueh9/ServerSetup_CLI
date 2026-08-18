@@ -35,7 +35,7 @@ def success(msg):
     console.print(f"[bold green]\\[SUCCESS][/bold green] {msg}")
 
 def step(msg):
-    console.print(f"\n[bold magenta]\\[STEP][/bold magenta] {msg}\n")
+    console.print(f"\n[bold magenta]▸[/bold magenta] {msg}\n")
 
 # ── Structural helpers ────────────────────────────────────────────
 
@@ -103,29 +103,21 @@ def warn_if_root_for_user_config(scope: str, text) -> bool:
 # ── System command runner ─────────────────────────────────────────
 
 def run_command(command):
-    print_execution(command)
+    cmd_str = " ".join(command)
     try:
-        result = subprocess.run(
-            command,
-            check=True,
-            text=True,
-            capture_output=True
-        )
-        print_success(command)
+        with console.status(f"[dim]{cmd_str}[/dim]", spinner="dots"):
+            result = subprocess.run(
+                command,
+                check=True,
+                text=True,
+                capture_output=True
+            )
+        console.print(f"[bold green]✔[/bold green] {cmd_str}")
         return result
     except subprocess.CalledProcessError as e:
-        print_execution_failed(command)
+        console.print(f"[bold red]✘[/bold red] {cmd_str}")
         console.print(f"[dim red]{e.stderr}[/dim red]")
         exit(1)
-
-def print_execution(command):
-    console.print(f"[bold blue]\\[INFO][/bold blue] EXECUTING: [dim]{' '.join(command)}[/dim]")
-
-def print_success(command):
-    console.print(f"[bold green]\\[SUCCESS][/bold green] {' '.join(command)}")
-
-def print_execution_failed(command):
-    console.print(f"[bold red]\\[ERROR][/bold red] {' '.join(command)}")
 
 # ── Presentation helpers ──────────────────────────────────────────
 
