@@ -1,5 +1,5 @@
 import subprocess
-from utils import ok, warn, error, info, success, step, run_command, CYAN, RESET
+from utils import ok, warn, error, info, success, step, run_command, status_table, CYAN, RESET
 
 def _timedatectl(args: list[str]) -> subprocess.CompletedProcess:
     return subprocess.run(["timedatectl"] + args, capture_output=True, text=True)
@@ -75,9 +75,10 @@ def show_ntp_status():
     sync = _timedatectl(["show", "--property=NTPSynchronized", "--value"])
     synced = sync.stdout.strip().lower() == "yes"
 
-    print()
-    info(f"NTP active : {'yes' if active else 'no'}")
-    info(f"NTP synced : {'yes' if synced else 'no'}")
+    status_table("NTP Status", [
+        ("NTP active", "yes" if active else "no"),
+        ("NTP synced", "yes" if synced else "no"),
+    ])
 
     if active and synced:
         ok("Clock is synchronized with NTP servers")

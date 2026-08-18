@@ -1,6 +1,7 @@
-from utils import run_command, ok, warn, error, info, success, step
+from utils import run_command, ok, warn, error, info, success, step, status_table
 import subprocess
 import os
+import re
 
 JAIL_LOCAL_FILE = "/etc/fail2ban/jail.local"
 
@@ -72,9 +73,21 @@ def show_status(jail: str = None):
         cmd.append(jail)
 
     result = subprocess.run(cmd, capture_output=True, text=True)
-    print()
-    if result.returncode == 0:
-        print(result.stdout.strip())
-    else:
+
+    if result.returncode != 0:
         warn(f"Could not get status: {result.stderr.strip()}")
-    print()
+        return
+
+    rows = []
+    for line in result.stdout.strip().splitlines():
+        clean = re.sub(r"^[\s|`-]+", "", line).strip()
+        if not clean:
+            continue
+        if ":" in clean:
+            key, _, value = clean.partition(":")
+            rows.append((key.strip(), value.strip()))
+        else:
+            rows.append(("", clean))
+
+    title = f"fail2ban Status: {jail}" if jail else "fail2ban Status"
+    status_table(title, rows)

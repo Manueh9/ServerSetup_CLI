@@ -1,4 +1,4 @@
-from utils import run_command, ok, warn, error, info, success, step
+from utils import run_command, ok, warn, error, info, success, step, status_table, usage_bar
 import subprocess
 import re
 import os
@@ -170,10 +170,12 @@ def set_swappiness(value: int) -> bool:
 
 def show_swap_status():
     info_dict = get_swap_info()
-    print()
-    info(f"Swap total : {info_dict['total']}")
-    info(f"Swap used  : {info_dict['used']}")
-    info(f"Swap free  : {info_dict['free']}")
+    status_table("Swap Status", [
+        ("Total", info_dict["total"]),
+        ("Used",  info_dict["used"]),
+        ("Free",  info_dict["free"]),
+    ])
+    usage_bar("Swap", info_dict["used"], info_dict["total"])
     print()
 
 def prompt_swap_setup() -> str | None:
