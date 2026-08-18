@@ -1,4 +1,4 @@
-from utils import run_command, GREEN, YELLOW, RED, CYAN, PINK, RESET, ok, info, warn, error, success
+from utils import run_command, ok, info, warn, error, success
 
 import subprocess
 import re

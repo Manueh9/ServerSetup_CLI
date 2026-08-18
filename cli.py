@@ -34,6 +34,7 @@ def run_all(args):
     for i, (title, action) in enumerate(PHASES, start=1):
         phase_header(i, total, title)
         action(args)
+        console.rule(style="dim")
 
     console.print("\n[bold green]✔ Full setup completed.[/bold green]\n")
 

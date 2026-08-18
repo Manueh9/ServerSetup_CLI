@@ -3,7 +3,7 @@ from modules.git import (
     set_editor, set_default_branch, set_pull_strategy,
     generate_ssh_key, show_config, configure_git_as_real_user
 )
-from utils import warn_if_root_for_user_config, step, info, RED, RESET, ok
+from utils import warn_if_root_for_user_config, step, info, error, ok
 
 def register_args(parser):
     group = parser.add_argument_group("Git")
@@ -60,7 +60,7 @@ def handle(args):
             return
 
         if bool(args.git_name) != bool(args.git_email):
-            print(f"{RED}[ERROR]{RESET} --git-name and --git-email must be used together")
+            error("--git-name and --git-email must be used together")
             return
 
         name, email = args.git_name, args.git_email
@@ -89,7 +89,7 @@ def handle(args):
     # ── SSH ───────────────────────────────────────────
     if args.git_ssh:
         if not args.git_email:
-            print(f"{RED}[ERROR]{RESET} --git-ssh requires --git-email")
+            error("--git-ssh requires --git-email")
             return
         step("Generating SSH key...")
         generate_ssh_key(args.git_email, args.ssh_key_type)

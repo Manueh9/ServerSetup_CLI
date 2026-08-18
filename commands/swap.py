@@ -3,7 +3,7 @@ from modules.swap import (
     set_swappiness, show_swap_status, has_swap,
     prompt_swap_setup,
 )
-from utils import step, ok, RED, RESET
+from utils import step, ok
 
 def register_args(parser):
     group = parser.add_argument_group("Swap")

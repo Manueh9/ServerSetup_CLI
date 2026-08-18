@@ -1,4 +1,5 @@
-from utils import run_command, GREEN, RESET, YELLOW, RED, CYAN, ok, warn, error, info, success, get_real_user
+from utils import run_command, ok, warn, error, info, success, get_real_user, console
+from rich.markup import escape
 import subprocess
 import os
 
@@ -61,8 +62,8 @@ def generate_ssh_key(email: str, key_type: str = "ed25519"):
             pub_key = f.read().strip()
 
         ok(f"SSH key generated: {key_path}")
-        print(f"\n{CYAN}  Add this key to GitHub → Settings → SSH Keys:{RESET}")
-        print(f"\n  {pub_key}\n")
+        console.print("\n[cyan]  Add this key to GitHub → Settings → SSH Keys:[/cyan]")
+        console.print(f"\n  {pub_key}\n", markup=False)
     else:
         error("Key generation failed — .pub file not found")
 
@@ -74,11 +75,11 @@ def show_config(scope: str = "--global"):
         capture_output=True, text=True
     )
     if result.returncode == 0 and result.stdout.strip():
-        print()
+        console.print()
         for line in result.stdout.strip().splitlines():
             key, _, value = line.partition("=")
-            print(f"  {CYAN}{key}{RESET} = {value}")
-        print()
+            console.print(f"  [cyan]{escape(key)}[/cyan] = {escape(value)}")
+        console.print()
     else:
         warn(f"No git config found for scope '{scope.lstrip('-')}'")
 

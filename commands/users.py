@@ -3,7 +3,7 @@ from modules.users import (
     delete_user, setup_ssh_key, list_users, show_user_info,
     prompt_new_user,
 )
-from utils import step, data_table, RED, RESET
+from utils import step, data_table, error
 
 def register_args(parser):
     group = parser.add_argument_group("Users")
@@ -41,7 +41,7 @@ def handle(args):
 
     if args.add_ssh_key:
         if not args.ssh_key:
-            print(f"{RED}[ERROR]{RESET} --add-ssh-key requires --ssh-key")
+            error("--add-ssh-key requires --ssh-key")
             return
         step(f"Adding SSH key for '{args.add_ssh_key}'...")
         setup_ssh_key(args.add_ssh_key, args.ssh_key)

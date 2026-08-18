@@ -1,5 +1,5 @@
 from modules.hostname import get_current_hostname, set_hostname,show_hostname_info, prompt_hostname_change
-from utils import step, ok, RED, RESET
+from utils import step, ok
 
 def register_args(parser):
     group = parser.add_argument_group("Hostname")

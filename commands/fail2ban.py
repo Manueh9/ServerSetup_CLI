@@ -2,7 +2,7 @@ from modules.fail2ban import (
     install_fail2ban, enable_fail2ban, disable_fail2ban,
     configure_ssh_jail, restart_fail2ban, show_status,
 )
-from utils import step, warn_if_root_for_user_config, RED, RESET
+from utils import step, warn_if_root_for_user_config
 
 def register_args(parser):
     group = parser.add_argument_group("fail2ban")

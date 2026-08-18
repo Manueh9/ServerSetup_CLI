@@ -1,5 +1,5 @@
 from modules.ssh import install_ssh, enable_ssh, change_ssh_port, restart_ssh, check_ssh_status
-from utils import PINK, RED, RESET, step
+from utils import step, error
 
 DEFAULT_PORT = 22
 
@@ -10,7 +10,7 @@ def register_args(parser):
 
 def handle(args):
     if args.ssh_port and not args.ssh:
-        print(f"{RED}[ERROR]{RESET} --ssh-port requires --ssh")
+        error("--ssh-port requires --ssh")
         return
 
     if not args.ssh:

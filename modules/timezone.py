@@ -1,5 +1,6 @@
 import subprocess
-from utils import ok, warn, error, info, success, step, run_command, status_table, CYAN, RESET
+from utils import ok, warn, error, info, success, step, run_command, status_table
+from rich.markup import escape
 
 def _timedatectl(args: list[str]) -> subprocess.CompletedProcess:
     return subprocess.run(["timedatectl"] + args, capture_output=True, text=True)
@@ -12,8 +13,8 @@ def show_current_timezone():
     tz = get_current_timezone()
     time = subprocess.run(["date"], capture_output=True, text=True).stdout.strip()
     print()
-    info(f"Current timezone : {CYAN}{tz}{RESET}")
-    info(f"Current datetime : {CYAN}{time}{RESET}")
+    info(f"Current timezone : [cyan]{escape(tz)}[/cyan]")
+    info(f"Current datetime : [cyan]{escape(time)}[/cyan]")
     print()
 
 def list_timezones(region: str = None):

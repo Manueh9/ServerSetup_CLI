@@ -7,32 +7,22 @@ from rich import box
 
 console = Console()
 
-# ── Legacy color constants (kept for compatibility) ───────────────
-# Some modules import these directly; keep them so nothing breaks.
-GREEN  = "\033[92m"
-YELLOW = "\033[93m"
-RED    = "\033[91m"
-CYAN   = "\033[96m"
-PINK   = "\033[95m"
-BLUE   = "\033[94m"
-RESET  = "\033[0m"
-
 # ── Message helpers (Rich-powered) ────────────────────────────────
 
 def ok(msg):
-    console.print(f"[bold green]\\[OK][/bold green] {msg}")
+    console.print(f"[green]✔[/green] {msg}")
 
 def info(msg):
-    console.print(f"[bold cyan]\\[INFO][/bold cyan] {msg}")
+    console.print(f"[cyan]ℹ[/cyan] {msg}")
 
 def warn(msg):
-    console.print(f"[bold yellow]\\[WARNING][/bold yellow] {msg}")
+    console.print(f"[yellow]⚠[/yellow] {msg}")
 
 def error(msg):
-    console.print(f"[bold red]\\[ERROR][/bold red] {msg}")
+    console.print(f"[red]✘[/red] {msg}")
 
 def success(msg):
-    console.print(f"[bold green]\\[SUCCESS][/bold green] {msg}")
+    console.print(f"[bold green]✔[/bold green] {msg}")
 
 def step(msg):
     console.print(f"\n[bold magenta]▸[/bold magenta] {msg}\n")
