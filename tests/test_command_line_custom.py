@@ -1,5 +1,5 @@
 import pytest
-from modules.command_line_custom import (
+from serverforge_cli.modules.command_line_custom import (
     _remove_block, _block_exists, _build_block,
     _get_current_state, PROMPT_BLOCK_START, PROMPT_BLOCK_END,
 )

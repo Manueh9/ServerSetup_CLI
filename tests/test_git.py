@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from modules.git import (
+from serverforge_cli.modules.git import (
     is_git_installed, install_git, configure_git,
     set_pull_strategy, prompt_credentials,
 )
@@ -16,43 +16,43 @@ class TestIsGitInstalled:
 
 class TestInstallGit:
     def test_skips_install_if_already_installed(self, mocker, mock_run_command):
-        mocker.patch("modules.git.is_git_installed", return_value=True)
-        mock = mock_run_command("modules.git")
+        mocker.patch("serverforge_cli.modules.git.is_git_installed", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.git")
         install_git()
         mock.assert_not_called()
 
     def test_installs_if_not_present(self, mocker, mock_run_command):
-        mocker.patch("modules.git.is_git_installed", return_value=False)
-        mock = mock_run_command("modules.git")
+        mocker.patch("serverforge_cli.modules.git.is_git_installed", return_value=False)
+        mock = mock_run_command("serverforge_cli.modules.git")
         install_git()
         mock.assert_called_once_with(["apt", "install", "-y", "git"])
 
 class TestConfigureGit:
     def test_sets_name_and_email(self, mock_run_command):
-        mock = mock_run_command("modules.git")
+        mock = mock_run_command("serverforge_cli.modules.git")
         configure_git("Ana", "ana@mail.com", scope="--global")
         assert mock.call_count == 2
         mock.assert_any_call(["git", "config", "--global", "user.name", "Ana"])
         mock.assert_any_call(["git", "config", "--global", "user.email", "ana@mail.com"])
 
     def test_uses_correct_scope(self, mock_run_command):
-        mock = mock_run_command("modules.git")
+        mock = mock_run_command("serverforge_cli.modules.git")
         configure_git("Ana", "ana@mail.com", scope="--system")
         mock.assert_any_call(["git", "config", "--system", "user.name", "Ana"])
 
 class TestPullStrategy:
     def test_rebase_sets_pull_rebase_true(self, mock_run_command):
-        mock = mock_run_command("modules.git")
+        mock = mock_run_command("serverforge_cli.modules.git")
         set_pull_strategy("rebase")
         mock.assert_called_once_with(["git", "config", "--global", "pull.rebase", "true"])
 
     def test_ff_only_sets_pull_ff_only(self, mock_run_command):
-        mock = mock_run_command("modules.git")
+        mock = mock_run_command("serverforge_cli.modules.git")
         set_pull_strategy("ff-only")
         mock.assert_called_once_with(["git", "config", "--global", "pull.ff", "only"])
 
     def test_merge_sets_pull_rebase_false(self, mock_run_command):
-        mock = mock_run_command("modules.git")
+        mock = mock_run_command("serverforge_cli.modules.git")
         set_pull_strategy("merge")
         mock.assert_called_once_with(["git", "config", "--global", "pull.rebase", "false"])
         

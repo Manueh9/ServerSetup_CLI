@@ -1,4 +1,4 @@
-from utils import run_command
+from serverforge_cli.utils import run_command
 
 def update_system():
     run_command(["apt", "update"])

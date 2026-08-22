@@ -1,5 +1,5 @@
 import subprocess
-from utils import ok, warn, error, info, success, step, run_command, status_table
+from serverforge_cli.utils import ok, warn, error, info, success, step, run_command, status_table
 from rich.markup import escape
 
 def _timedatectl(args: list[str]) -> subprocess.CompletedProcess:

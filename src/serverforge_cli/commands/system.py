@@ -1,5 +1,5 @@
-from modules.system import update_system, upgrade_system, full_upgrade_system
-from utils import step
+from serverforge_cli.modules.system import update_system, upgrade_system, full_upgrade_system
+from serverforge_cli.utils import step
 
 
 def register_args(parser):

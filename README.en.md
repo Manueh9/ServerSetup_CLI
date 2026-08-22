@@ -1,6 +1,7 @@
 # ServerSetup CLI
 
 ![Tests](https://github.com/Manueh9/ServerSetup_CLI/actions/workflows/tests.yml/badge.svg)
+[![PyPI](https://img.shields.io/pypi/v/serverforge-cli)](https://pypi.org/project/serverforge-cli/)
 ![Python](https://img.shields.io/badge/python-3.11%20|%203.12-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -20,19 +21,39 @@ brute-force attacks, adjusting the timezone... Doing this by hand is slow and
 error-prone. ServerSetup CLI packages that whole process into clear commands
 and an `--all` flow that leaves the server ready in a single run.
 
-## Installation
+## Quick install
 
+The package is published on PyPI as [`serverforge-cli`](https://pypi.org/project/serverforge-cli/)
+(requires Python 3.11+).
+
+**Linux / macOS**
 ```bash
-git clone https://github.com/Manueh9/ServerSetup_CLI
-cd ServerSetup_CLI
-python3 -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
+python3 -m pip install --user serverforge-cli
 ```
+
+**Windows** (PowerShell or CMD)
+```powershell
+python -m pip install --user serverforge-cli
+```
+
+Verify the install:
+```bash
+sforge --help
+```
+
+The repository also includes `install.sh` (Linux/macOS) and `install.bat`
+(Windows), which run that same command.
+
+> ⚠️ The package installs on any operating system, but the modules run
+> Ubuntu/Debian-specific tools (`apt`, `ufw`, `systemctl`, `fail2ban`...).
+> Installing it on Windows or macOS is only useful to explore the CLI or to
+> manage a remote server over SSH: to actually apply the configuration you
+> need to run `sforge` **on the target Linux server itself**.
 
 ## Full setup
 
 ```bash
-sudo python3 cli.py --all
+sudo sforge --all
 ```
 
 The `--all` flow runs phase by phase and is idempotent (it won't redo what's
@@ -62,9 +83,9 @@ All output is built with [Rich](https://github.com/Textualize/rich):
 ## Help
 
 ```bash
-python3 cli.py --help            # overview of the 11 available modules
-python3 cli.py --help ssh        # every flag for one specific module
-python3 cli.py --help git
+sforge --help            # overview of the 11 available modules
+sforge --help ssh        # every flag for one specific module
+sforge --help git
 ```
 
 `--help` with no arguments only shows the module list with a one-line
@@ -76,98 +97,98 @@ full detail (every flag with its description) ask for it explicitly with
 
 ### 1. System
 ```bash
-python3 cli.py --update          # apt update
-python3 cli.py --upgrade         # apt upgrade -y
-python3 cli.py --full-upgrade    # apt full-upgrade -y
+sforge --update          # apt update
+sforge --upgrade         # apt upgrade -y
+sforge --full-upgrade    # apt full-upgrade -y
 ```
 
 ### 2. SSH
 ```bash
-sudo python3 cli.py --ssh                    # install, enable and verify
-sudo python3 cli.py --ssh --ssh-port 2222    # install and change the port
+sudo sforge --ssh                    # install, enable and verify
+sudo sforge --ssh --ssh-port 2222    # install and change the port
 ```
 
 ### 3. Git
 ```bash
-python3 cli.py --install-git
-python3 cli.py --git-config --git-name "Name" --git-email "mail@example.com"
-python3 cli.py --git-config --git-scope system --git-name "..." --git-email "..."
-python3 cli.py --git-config --git-editor nano --git-branch main --git-pull rebase
-python3 cli.py --git-ssh --git-email "mail@example.com" --ssh-key-type ed25519
-python3 cli.py --git-show
+sforge --install-git
+sforge --git-config --git-name "Name" --git-email "mail@example.com"
+sforge --git-config --git-scope system --git-name "..." --git-email "..."
+sforge --git-config --git-editor nano --git-branch main --git-pull rebase
+sforge --git-ssh --git-email "mail@example.com" --ssh-key-type ed25519
+sforge --git-show
 ```
 
 ### 4. Prompt customization
 ```bash
-python3 cli.py --show-branch     # git branch + repo status
-python3 cli.py --show-time       # [HH:MM:SS] timestamp
-python3 cli.py --show-venv       # active virtualenv name
-python3 cli.py --prompt-status   # see which customizations are active
-python3 cli.py --remove-branch   # (and --remove-time, --remove-venv)
+sforge --show-branch     # git branch + repo status
+sforge --show-time       # [HH:MM:SS] timestamp
+sforge --show-venv       # active virtualenv name
+sforge --prompt-status   # see which customizations are active
+sforge --remove-branch   # (and --remove-time, --remove-venv)
 ```
 
 ### 5. Timezone
 ```bash
-python3 cli.py --show-timezone
-python3 cli.py --list-timezones-region Europe
-sudo python3 cli.py --set-timezone Europe/Madrid
-sudo python3 cli.py --enable-ntp        # automatic clock sync
-python3 cli.py --show-ntp
+sforge --show-timezone
+sforge --list-timezones-region Europe
+sudo sforge --set-timezone Europe/Madrid
+sudo sforge --enable-ntp        # automatic clock sync
+sforge --show-ntp
 ```
 
 ### 6. UFW (firewall)
 ```bash
-sudo python3 cli.py --install-ufw
-sudo python3 cli.py --allow-port 22 --protocol tcp
-sudo python3 cli.py --enable-ufw
-sudo python3 cli.py --ufw-status --ufw-verbose
-sudo python3 cli.py --deny-port 8080
-sudo python3 cli.py --delete-rule 22
+sudo sforge --install-ufw
+sudo sforge --allow-port 22 --protocol tcp
+sudo sforge --enable-ufw
+sudo sforge --ufw-status --ufw-verbose
+sudo sforge --deny-port 8080
+sudo sforge --delete-rule 22
 ```
 
 ### 7. fail2ban (brute-force protection)
 ```bash
-sudo python3 cli.py --install-fail2ban
-sudo python3 cli.py --protect-ssh --max-retry 3 --ban-time 30m
-sudo python3 cli.py --enable-fail2ban
-sudo python3 cli.py --fail2ban-status --jail sshd
+sudo sforge --install-fail2ban
+sudo sforge --protect-ssh --max-retry 3 --ban-time 30m
+sudo sforge --enable-fail2ban
+sudo sforge --fail2ban-status --jail sshd
 ```
 
 ### 8. Hostname
 ```bash
-python3 cli.py --show-hostname
-sudo python3 cli.py --set-hostname web-prod-01
+sforge --show-hostname
+sudo sforge --set-hostname web-prod-01
 ```
 
 ### 9. Users
 ```bash
-sudo python3 cli.py --create-user devuser --user-password "..."
-sudo python3 cli.py --grant-sudo devuser
-sudo python3 cli.py --revoke-sudo devuser
-sudo python3 cli.py --add-ssh-key devuser --ssh-key "ssh-ed25519 AAAA..."
-sudo python3 cli.py --list-users
-sudo python3 cli.py --user-info devuser
-sudo python3 cli.py --delete-user devuser --keep-home
+sudo sforge --create-user devuser --user-password "..."
+sudo sforge --grant-sudo devuser
+sudo sforge --revoke-sudo devuser
+sudo sforge --add-ssh-key devuser --ssh-key "ssh-ed25519 AAAA..."
+sudo sforge --list-users
+sudo sforge --user-info devuser
+sudo sforge --delete-user devuser --keep-home
 ```
 
 ### 10. Cron
 ```bash
-python3 cli.py --add-cron "0 3 * * *" --cron-command "/home/devuser/backup.sh" --cron-comment "Daily backup"
-python3 cli.py --list-cron
-python3 cli.py --list-cron-cli          # only tasks managed by this CLI
-python3 cli.py --remove-cron 1
-python3 cli.py --remove-cron-cli
-python3 cli.py --clear-cron             # removes ALL tasks, use with care
+sforge --add-cron "0 3 * * *" --cron-command "/home/devuser/backup.sh" --cron-comment "Daily backup"
+sforge --list-cron
+sforge --list-cron-cli          # only tasks managed by this CLI
+sforge --remove-cron 1
+sforge --remove-cron-cli
+sforge --clear-cron             # removes ALL tasks, use with care
 ```
 
 ### 11. Swap
 ```bash
-sudo python3 cli.py --create-swap          # 2G by default
-sudo python3 cli.py --create-swap 1G
-sudo python3 cli.py --swap-status
-sudo python3 cli.py --swappiness 10        # recommended for servers
-sudo python3 cli.py --disable-swap
-sudo python3 cli.py --remove-swap
+sudo sforge --create-swap          # 2G by default
+sudo sforge --create-swap 1G
+sudo sforge --swap-status
+sudo sforge --swappiness 10        # recommended for servers
+sudo sforge --disable-swap
+sudo sforge --remove-swap
 ```
 
 ## What the `--all` flow includes
@@ -191,26 +212,29 @@ inside `--all`.
 ## Architecture
 
 ```
-cli.py                  → entry point, orchestrates --all by phases and
-                           resolves --help (overview + per-module detail)
-commands/                → parses arguments and decides what to run
-  ├── system.py
-  ├── ssh.py
-  ├── git.py
-  ├── command_line_custom.py
-  ├── timezone.py
-  ├── ufw.py
-  ├── fail2ban.py
-  ├── hostname.py
-  ├── users.py
-  ├── cron.py
-  └── swap.py
-modules/                 → actual logic, runs system commands
-  └── (one file per command above)
-utils.py                 → shared Rich-based helpers (icon messages, status/
-                           list tables, usage bar, execution spinner, real-
-                           user detection behind sudo)
-tests/                   → pytest suite with mocks
+src/serverforge_cli/
+├── cli.py               → entry point (sforge), orchestrates --all by
+│                           phases and resolves --help (overview + detail)
+├── commands/             → parses arguments and decides what to run
+│   ├── system.py
+│   ├── ssh.py
+│   ├── git.py
+│   ├── command_line_custom.py
+│   ├── timezone.py
+│   ├── ufw.py
+│   ├── fail2ban.py
+│   ├── hostname.py
+│   ├── users.py
+│   ├── cron.py
+│   └── swap.py
+├── modules/              → actual logic, runs system commands
+│   └── (one file per command above)
+└── utils.py              → shared Rich-based helpers (icon messages,
+                            status/list tables, usage bar, execution
+                            spinner, real-user detection behind sudo)
+pyproject.toml           → package metadata, dependencies and the
+                            `sforge` entry point
+tests/                    → pytest suite with mocks
 ```
 
 Each layer has a single responsibility. `cli.py` doesn't know what each
@@ -223,11 +247,26 @@ An important design detail: when the CLI runs under `sudo`, modules that
 configure user-level things (Git, Cron) detect the real user via
 `SUDO_USER` and act on their configuration, not root's.
 
+## Development
+
+To modify the code or contribute, install the project in editable mode from
+a cloned copy of the repository:
+
+```bash
+git clone https://github.com/Manueh9/ServerSetup_CLI
+cd ServerSetup_CLI
+python3 -m venv venv && source venv/bin/activate
+pip install -e ".[dev]"
+```
+
+This installs `serverforge-cli` in editable mode along with the development
+dependencies (`pytest`, `pytest-mock`, `pytest-cov`).
+
 ## Tests
 
 ```bash
 pytest tests/ -v
-pytest tests/ -v --cov=modules --cov-report=term-missing
+pytest tests/ -v --cov=serverforge_cli --cov-report=term-missing
 ```
 
 Tests mock every system call (`apt`, `systemctl`, `git config`, `crontab`,

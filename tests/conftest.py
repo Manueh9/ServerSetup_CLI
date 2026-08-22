@@ -2,14 +2,14 @@ import pytest
 import sys
 import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 @pytest.fixture
 def mock_run_command(mocker):
     """
     Returns a function so each test can patch run_command
     in the correct module namespace.
-    Usage: mock = mock_run_command("modules.system")
+    Usage: mock = mock_run_command("serverforge_cli.modules.system")
     """
     def _patch(module_path: str):
         return mocker.patch(f"{module_path}.run_command")

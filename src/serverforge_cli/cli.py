@@ -1,19 +1,19 @@
 import argparse
 import sys
 from rich.table import Table
-from utils import banner, phase_header, console, error
-from commands import MODULES
-from commands import system              as cmd_system
-from commands import ssh                 as cmd_ssh
-from commands import git                 as cmd_git
-from commands import command_line_custom as cmd_prompt
-from commands import timezone            as cmd_timezone
-from commands import ufw                 as cmd_ufw
-from commands import fail2ban            as cmd_fail2ban
-from commands import hostname            as cmd_hostname
-from commands import users               as cmd_users
-from commands import cron                as cmd_cron
-from commands import swap                as cmd_swap
+from serverforge_cli.utils import banner, phase_header, console, error
+from serverforge_cli.commands import MODULES
+from serverforge_cli.commands import system              as cmd_system
+from serverforge_cli.commands import ssh                 as cmd_ssh
+from serverforge_cli.commands import git                 as cmd_git
+from serverforge_cli.commands import command_line_custom as cmd_prompt
+from serverforge_cli.commands import timezone            as cmd_timezone
+from serverforge_cli.commands import ufw                 as cmd_ufw
+from serverforge_cli.commands import fail2ban            as cmd_fail2ban
+from serverforge_cli.commands import hostname            as cmd_hostname
+from serverforge_cli.commands import users               as cmd_users
+from serverforge_cli.commands import cron                as cmd_cron
+from serverforge_cli.commands import swap                as cmd_swap
 
 # ── Module registry for the two-tier --help (key, module, one-liner) ─
 # Order matches commands.MODULES so both stay in sync.

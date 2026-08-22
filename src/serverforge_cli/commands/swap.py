@@ -1,9 +1,9 @@
-from modules.swap import (
+from serverforge_cli.modules.swap import (
     create_swap, disable_swap, remove_swap,
     set_swappiness, show_swap_status, has_swap,
     prompt_swap_setup,
 )
-from utils import step, ok
+from serverforge_cli.utils import step, ok
 
 def register_args(parser):
     group = parser.add_argument_group("Swap")

@@ -1,4 +1,4 @@
-from modules.command_line_custom import (
+from serverforge_cli.modules.command_line_custom import (
     show_git_actual_branch, remove_git_actual_branch,
     show_timestamp, remove_timestamp,
     show_venv, remove_venv,

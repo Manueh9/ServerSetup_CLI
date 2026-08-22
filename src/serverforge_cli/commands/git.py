@@ -1,9 +1,9 @@
-from modules.git import (
+from serverforge_cli.modules.git import (
     install_git, configure_git, prompt_credentials,
     set_editor, set_default_branch, set_pull_strategy,
     generate_ssh_key, show_config, configure_git_as_real_user
 )
-from utils import warn_if_root_for_user_config, step, info, error, ok
+from serverforge_cli.utils import warn_if_root_for_user_config, step, info, error, ok
 
 def register_args(parser):
     group = parser.add_argument_group("Git")
