@@ -9,6 +9,10 @@ y este proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/
 
 ## [Sin publicar]
 
+### Corregido
+- El texto de uso de `--help` (y el `prog` mostrado en `--help <módulo>`)
+  seguía mostrando `cli.py` en vez de `sforge`.
+
 ## [1.0.0] - 2026-08-22
 
 ### Añadido
@@ -54,5 +58,5 @@ y este proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/
   entorno virtual + instalación editable), dejando la instalación vía PyPI
   como vía principal para usuarios finales.
 
-[Sin publicar]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1...HEAD
-[1.0.0]: https://pypi.org/project/serverforge-cli/1.0.0/
+[Sin publicar]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Manueh9/ServerSetup_CLI/releases/tag/v1.0.0

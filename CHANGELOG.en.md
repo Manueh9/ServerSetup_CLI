@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The `--help` usage text (and the `prog` shown by `--help <module>`) still
+  read `cli.py` instead of `sforge`.
+
 ## [1.0.0] - 2026-08-22
 
 ### Added
@@ -54,5 +58,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   + editable install), with the PyPI install now the primary path for end
   users.
 
-[Unreleased]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1...HEAD
-[1.0.0]: https://pypi.org/project/serverforge-cli/1.0.0/
+[Unreleased]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Manueh9/ServerSetup_CLI/releases/tag/v1.0.0

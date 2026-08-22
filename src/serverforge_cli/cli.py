@@ -48,9 +48,9 @@ PHASES = [
 
 def print_overview_help():
     console.print("[bold]USAGE[/bold]")
-    console.print("  cli.py --all                  Run the full guided setup")
-    console.print("  cli.py <flags>                Run specific actions")
-    console.print("  cli.py --help <module>        Show full options for one module\n")
+    console.print("  sforge --all                  Run the full guided setup")
+    console.print("  sforge <flags>                Run specific actions")
+    console.print("  sforge --help <module>        Show full options for one module\n")
 
     console.print("[bold]MODULES[/bold]")
     table = Table(box=None, show_header=False, padding=(0, 2, 0, 2))
@@ -60,7 +60,7 @@ def print_overview_help():
         table.add_row(key, description)
     console.print(table)
 
-    console.print("\nRun [bold cyan]cli.py --help <module>[/bold cyan] for that module's full flag list.\n")
+    console.print("\nRun [bold cyan]sforge --help <module>[/bold cyan] for that module's full flag list.\n")
 
 def print_module_help(key: str):
     match = next(((k, m) for k, m, _ in MODULE_HELP if k == key), None)
@@ -70,7 +70,7 @@ def print_module_help(key: str):
         exit(1)
 
     _, module = match
-    temp_parser = argparse.ArgumentParser(prog="cli.py", add_help=False)
+    temp_parser = argparse.ArgumentParser(prog="sforge", add_help=False)
     module.register_args(temp_parser)
     console.print(temp_parser.format_help(), markup=False, highlight=False)
 
