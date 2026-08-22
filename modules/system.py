@@ -5,7 +5,7 @@ def update_system():
 
     
 def upgrade_system():
-    run_command(["apt", "upgrade"])
+    run_command(["apt", "upgrade", "-y"])
 
 
 def full_upgrade_system():
