@@ -64,7 +64,7 @@ class TestCreateUser:
         mock = mock_run_command("serverforge_cli.modules.users")
         result = create_user("devuser")
         mock.assert_called_once_with(
-            ["adduser", "--disabled-password", "--gecos", "", "devuser"]
+            ["adduser", "--disabled-password", "--gecos", "", "devuser"], require_sudo=True
         )
         assert result is True
 
@@ -88,7 +88,7 @@ class TestAddToGroup:
         mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
         mock = mock_run_command("serverforge_cli.modules.users")
         result = add_to_group("devuser", "docker")
-        mock.assert_called_once_with(["usermod", "-aG", "docker", "devuser"])
+        mock.assert_called_once_with(["usermod", "-aG", "docker", "devuser"], require_sudo=True)
         assert result is True
 
 class TestGrantSudo:
@@ -96,7 +96,7 @@ class TestGrantSudo:
         mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
         mock = mock_run_command("serverforge_cli.modules.users")
         grant_sudo("devuser")
-        mock.assert_called_once_with(["usermod", "-aG", "sudo", "devuser"])
+        mock.assert_called_once_with(["usermod", "-aG", "sudo", "devuser"], require_sudo=True)
 
 class TestRevokeSudo:
     def test_fails_if_user_does_not_exist(self, mocker, mock_run_command):
@@ -110,7 +110,7 @@ class TestRevokeSudo:
         mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
         mock = mock_run_command("serverforge_cli.modules.users")
         result = revoke_sudo("devuser")
-        mock.assert_called_once_with(["deluser", "devuser", "sudo"])
+        mock.assert_called_once_with(["deluser", "devuser", "sudo"], require_sudo=True)
         assert result is True
 
 # ── delete_user ───────────────────────────────────────────────────
@@ -127,13 +127,13 @@ class TestDeleteUser:
         mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
         mock = mock_run_command("serverforge_cli.modules.users")
         delete_user("devuser")
-        mock.assert_called_once_with(["deluser", "--remove-home", "devuser"])
+        mock.assert_called_once_with(["deluser", "--remove-home", "devuser"], require_sudo=True)
 
     def test_deletes_keeping_home_when_requested(self, mocker, mock_run_command):
         mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
         mock = mock_run_command("serverforge_cli.modules.users")
         delete_user("devuser", remove_home=False)
-        mock.assert_called_once_with(["deluser", "devuser"])
+        mock.assert_called_once_with(["deluser", "devuser"], require_sudo=True)
 
 # ── setup_ssh_key ─────────────────────────────────────────────────
 
@@ -194,7 +194,7 @@ class TestSetupSshKey:
         setup_ssh_key("devuser", "ssh-ed25519 AAAAtest", home_dir=str(tmp_path))
 
         ssh_dir = str(tmp_path / ".ssh")
-        mock.assert_called_once_with(["chown", "-R", "devuser:devuser", ssh_dir])
+        mock.assert_called_once_with(["chown", "-R", "devuser:devuser", ssh_dir], require_sudo=True)
 
 # ── list_users ────────────────────────────────────────────────────
 

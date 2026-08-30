@@ -28,7 +28,7 @@ def create_user(username: str) -> bool:
         return True
 
     step(f"Creating user '{username}'...")
-    run_command(["adduser", "--disabled-password", "--gecos", "", username])
+    run_command(["adduser", "--disabled-password", "--gecos", "", username], require_sudo=True)
 
     if user_exists(username):
         success(f"User '{username}' created")
@@ -55,7 +55,7 @@ def add_to_group(username: str, group: str):
         error(f"User '{username}' does not exist")
         return False
 
-    run_command(["usermod", "-aG", group, username])
+    run_command(["usermod", "-aG", group, username], require_sudo=True)
     success(f"User '{username}' added to group '{group}'")
     return True
 
@@ -67,7 +67,7 @@ def revoke_sudo(username: str):
         error(f"User '{username}' does not exist")
         return False
 
-    run_command(["deluser", username, "sudo"])
+    run_command(["deluser", username, "sudo"], require_sudo=True)
     success(f"Sudo access revoked for '{username}'")
     return True
 
@@ -81,7 +81,7 @@ def delete_user(username: str, remove_home: bool = True):
         cmd.append("--remove-home")
     cmd.append(username)
 
-    run_command(cmd)
+    run_command(cmd, require_sudo=True)
     success(f"User '{username}' deleted" + (" (home removed)" if remove_home else ""))
     return True
 
@@ -106,7 +106,7 @@ def setup_ssh_key(username: str, public_key: str, home_dir: str = None) -> bool:
 
         os.chmod(auth_keys, 0o600)
 
-        run_command(["chown", "-R", f"{username}:{username}", ssh_dir])
+        run_command(["chown", "-R", f"{username}:{username}", ssh_dir], require_sudo=True)
 
         success(f"SSH key added for '{username}'")
         return True
