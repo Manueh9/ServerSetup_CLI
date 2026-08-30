@@ -4,11 +4,11 @@ import subprocess
 import re
 
 def install_ssh():
-    run_command(["apt", "install", "-y", "openssh-server"])
+    run_command(["apt", "install", "-y", "openssh-server"], requires_sudo=True)
 
 def enable_ssh():
-    run_command(["systemctl", "enable", "ssh"])
-    run_command(["systemctl", "start", "ssh"])
+    run_command(["systemctl", "enable", "ssh"], requires_sudo=True)
+    run_command(["systemctl", "start", "ssh"], requires_sudo=True)
 
 def change_ssh_port(port: int):
     if port < 1 or port > 65535:
@@ -65,11 +65,11 @@ def _verify_config_port(expected_port: int):
     warn("No active 'Port' line found in config")
 
 def restart_ssh():
-    run_command(["systemctl", "stop", "ssh.socket"])
-    run_command(["systemctl", "stop", "ssh"])
-    run_command(["systemctl", "daemon-reload"])
-    run_command(["systemctl", "start", "ssh.socket"])
-    run_command(["systemctl", "start", "ssh"])
+    run_command(["systemctl", "stop", "ssh.socket"], requires_sudo=True)
+    run_command(["systemctl", "stop", "ssh"], requires_sudo=True)
+    run_command(["systemctl", "daemon-reload"], requires_sudo=True)
+    run_command(["systemctl", "start", "ssh.socket"], requires_sudo=True)
+    run_command(["systemctl", "start", "ssh"], requires_sudo=True)
     ok("SSH service and socket restarted")
 
 def check_ssh_status():
