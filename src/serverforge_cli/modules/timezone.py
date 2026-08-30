@@ -56,7 +56,7 @@ def set_timezone(timezone: str) -> bool:
         return True
 
     step(f"Setting timezone to {timezone}...")
-    run_command(["timedatectl", "set-timezone", timezone])
+    run_command(["timedatectl", "set-timezone", timezone], requires_sudo=True)
 
     new_tz = get_current_timezone()
     if new_tz == timezone:
@@ -94,7 +94,7 @@ def enable_ntp():
         ok("NTP is already enabled")
         return
     step("Enabling NTP synchronization...")
-    run_command(["timedatectl", "set-ntp", "true"])
+    run_command(["timedatectl", "set-ntp", "true"], requires_sudo=True)
     show_ntp_status()
 
 def disable_ntp():
@@ -102,5 +102,5 @@ def disable_ntp():
         ok("NTP is already disabled")
         return
     step("Disabling NTP synchronization...")
-    run_command(["timedatectl", "set-ntp", "false"])
+    run_command(["timedatectl", "set-ntp", "false"], requires_sudo=True)
     show_ntp_status()
