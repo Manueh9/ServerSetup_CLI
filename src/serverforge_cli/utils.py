@@ -1,4 +1,5 @@
 import subprocess
+import shlex
 import os
 from rich.console import Console
 from rich.panel import Panel
@@ -92,8 +93,20 @@ def warn_if_root_for_user_config(scope: str, text) -> bool:
 
 # ── System command runner ─────────────────────────────────────────
 
-def run_command(command):
+def run_command(command, requires_sudo=False):
+        """
+    Execute a system command.
+
+    Args:
+        command: Command and arguments as a list.
+        privileged: If True, execute with sudo when not already running as root.
+    """
+
+    if requires_sudo and not is_running_as_root():
+        command = ["sudo"] + command
+
     cmd_str = " ".join(command)
+
     try:
         with console.status(f"[dim]{cmd_str}[/dim]", spinner="dots"):
             result = subprocess.run(
@@ -102,12 +115,17 @@ def run_command(command):
                 text=True,
                 capture_output=True
             )
+
         console.print(f"[bold green]✔[/bold green] {cmd_str}")
         return result
+
     except subprocess.CalledProcessError as e:
         console.print(f"[bold red]✘[/bold red] {cmd_str}")
-        console.print(f"[dim red]{e.stderr}[/dim red]")
-        exit(1)
+
+        if e.stderr:
+            console.print(f"[dim red]{e.stderr.strip()}[/dim red]")
+
+        raise SystemExit(1)
 
 # ── Presentation helpers ──────────────────────────────────────────
 

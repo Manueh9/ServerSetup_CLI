@@ -1,9 +1,9 @@
-from modules.timezone import (
+from serverforge_cli.modules.timezone import (
     show_current_timezone, list_timezones,
     set_timezone, show_ntp_status,
     enable_ntp, disable_ntp,
 )
-from utils import step
+from serverforge_cli.utils import step
 
 def register_args(parser):
     group = parser.add_argument_group("Timezone")

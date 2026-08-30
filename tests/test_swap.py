@@ -1,5 +1,5 @@
 import pytest
-from modules.swap import (
+from serverforge_cli.modules.swap import (
     is_valid_size, has_swap, create_swap,
     disable_swap, remove_swap, set_swappiness,
     prompt_swap_setup, get_swap_info,
@@ -66,23 +66,23 @@ class TestGetSwapInfo:
 
 class TestCreateSwap:
     def test_rejects_invalid_size(self, mock_run_command):
-        mock = mock_run_command("modules.swap")
+        mock = mock_run_command("serverforge_cli.modules.swap")
         result = create_swap("invalid")
         mock.assert_not_called()
         assert result is False
 
     def test_skips_if_swap_already_active(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.has_swap", return_value=True)
-        mock = mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.has_swap", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.swap")
         result = create_swap("2G")
         mock.assert_not_called()
         assert result is True
 
     def test_creates_swapfile_when_none_exists(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.has_swap", side_effect=[False, True])
-        mocker.patch("modules.swap._swapfile_exists", return_value=False)
-        mocker.patch("modules.swap._add_to_fstab")
-        mock = mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.has_swap", side_effect=[False, True])
+        mocker.patch("serverforge_cli.modules.swap._swapfile_exists", return_value=False)
+        mocker.patch("serverforge_cli.modules.swap._add_to_fstab")
+        mock = mock_run_command("serverforge_cli.modules.swap")
 
         result = create_swap("2G")
 
@@ -93,10 +93,10 @@ class TestCreateSwap:
         assert result is True
 
     def test_activates_existing_swapfile_without_recreating(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.has_swap", side_effect=[False, True])
-        mocker.patch("modules.swap._swapfile_exists", return_value=True)
-        mocker.patch("modules.swap._add_to_fstab")
-        mock = mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.has_swap", side_effect=[False, True])
+        mocker.patch("serverforge_cli.modules.swap._swapfile_exists", return_value=True)
+        mocker.patch("serverforge_cli.modules.swap._add_to_fstab")
+        mock = mock_run_command("serverforge_cli.modules.swap")
 
         result = create_swap("2G")
 
@@ -106,10 +106,10 @@ class TestCreateSwap:
         assert result is True
 
     def test_reports_failure_if_activation_fails(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.has_swap", side_effect=[False, False])
-        mocker.patch("modules.swap._swapfile_exists", return_value=False)
-        mocker.patch("modules.swap._add_to_fstab")
-        mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.has_swap", side_effect=[False, False])
+        mocker.patch("serverforge_cli.modules.swap._swapfile_exists", return_value=False)
+        mocker.patch("serverforge_cli.modules.swap._add_to_fstab")
+        mock_run_command("serverforge_cli.modules.swap")
 
         result = create_swap("2G")
         assert result is False
@@ -118,15 +118,15 @@ class TestCreateSwap:
 
 class TestDisableSwap:
     def test_skips_if_no_active_swap(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.has_swap", return_value=False)
-        mock = mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.has_swap", return_value=False)
+        mock = mock_run_command("serverforge_cli.modules.swap")
         result = disable_swap()
         mock.assert_not_called()
         assert result is True
 
     def test_disables_active_swap(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.has_swap", side_effect=[True, False])
-        mock = mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.has_swap", side_effect=[True, False])
+        mock = mock_run_command("serverforge_cli.modules.swap")
 
         result = disable_swap()
 
@@ -134,8 +134,8 @@ class TestDisableSwap:
         assert result is True
 
     def test_reports_failure_if_still_active(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.has_swap", side_effect=[True, True])
-        mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.has_swap", side_effect=[True, True])
+        mock_run_command("serverforge_cli.modules.swap")
 
         result = disable_swap()
         assert result is False
@@ -144,10 +144,10 @@ class TestDisableSwap:
 
 class TestRemoveSwap:
     def test_removes_file_and_fstab_entry(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.disable_swap")
-        mocker.patch("modules.swap._swapfile_exists", return_value=True)
-        mocker.patch("modules.swap._remove_from_fstab")
-        mock = mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.disable_swap")
+        mocker.patch("serverforge_cli.modules.swap._swapfile_exists", return_value=True)
+        mocker.patch("serverforge_cli.modules.swap._remove_from_fstab")
+        mock = mock_run_command("serverforge_cli.modules.swap")
 
         result = remove_swap()
 
@@ -155,10 +155,10 @@ class TestRemoveSwap:
         assert result is True
 
     def test_skips_rm_if_file_does_not_exist(self, mocker, mock_run_command):
-        mocker.patch("modules.swap.disable_swap")
-        mocker.patch("modules.swap._swapfile_exists", return_value=False)
-        mocker.patch("modules.swap._remove_from_fstab")
-        mock = mock_run_command("modules.swap")
+        mocker.patch("serverforge_cli.modules.swap.disable_swap")
+        mocker.patch("serverforge_cli.modules.swap._swapfile_exists", return_value=False)
+        mocker.patch("serverforge_cli.modules.swap._remove_from_fstab")
+        mock = mock_run_command("serverforge_cli.modules.swap")
 
         remove_swap()
 
@@ -168,13 +168,13 @@ class TestRemoveSwap:
 
 class TestSetSwappiness:
     def test_rejects_value_below_zero(self, mock_run_command):
-        mock = mock_run_command("modules.swap")
+        mock = mock_run_command("serverforge_cli.modules.swap")
         result = set_swappiness(-1)
         mock.assert_not_called()
         assert result is False
 
     def test_rejects_value_above_100(self, mock_run_command):
-        mock = mock_run_command("modules.swap")
+        mock = mock_run_command("serverforge_cli.modules.swap")
         result = set_swappiness(101)
         mock.assert_not_called()
         assert result is False
@@ -192,7 +192,7 @@ class TestSetSwappiness:
             return original_open(path, mode)
         monkeypatch.setattr("builtins.open", fake_open)
 
-        mock = mock_run_command("modules.swap")
+        mock = mock_run_command("serverforge_cli.modules.swap")
         result = set_swappiness(10)
 
         mock.assert_called_once_with(["sysctl", "vm.swappiness=10"])
@@ -210,7 +210,7 @@ class TestSetSwappiness:
             return original_open(path, mode)
         monkeypatch.setattr("builtins.open", fake_open)
 
-        mock_run_command("modules.swap")
+        mock_run_command("serverforge_cli.modules.swap")
         set_swappiness(10)
 
         content = sysctl_file.read_text()

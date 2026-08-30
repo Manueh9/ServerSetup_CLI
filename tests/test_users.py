@@ -1,5 +1,5 @@
 import pytest
-from modules.users import (
+from serverforge_cli.modules.users import (
     is_valid_username, user_exists, create_user,
     add_to_group, grant_sudo, revoke_sudo, delete_user,
     setup_ssh_key, list_users, prompt_new_user,
@@ -47,21 +47,21 @@ class TestUserExists:
 
 class TestCreateUser:
     def test_rejects_invalid_username(self, mock_run_command):
-        mock = mock_run_command("modules.users")
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = create_user("Invalid User")
         mock.assert_not_called()
         assert result is False
 
     def test_skips_if_already_exists(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = create_user("devuser")
         mock.assert_not_called()
         assert result is True
 
     def test_creates_if_not_exists(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", side_effect=[False, True])
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", side_effect=[False, True])
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = create_user("devuser")
         mock.assert_called_once_with(
             ["adduser", "--disabled-password", "--gecos", "", "devuser"]
@@ -69,8 +69,8 @@ class TestCreateUser:
         assert result is True
 
     def test_reports_failure_if_creation_did_not_work(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", side_effect=[False, False])
-        mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", side_effect=[False, False])
+        mock_run_command("serverforge_cli.modules.users")
         result = create_user("devuser")
         assert result is False
 
@@ -78,37 +78,37 @@ class TestCreateUser:
 
 class TestAddToGroup:
     def test_fails_if_user_does_not_exist(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=False)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=False)
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = add_to_group("ghost", "sudo")
         mock.assert_not_called()
         assert result is False
 
     def test_adds_user_to_group(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = add_to_group("devuser", "docker")
         mock.assert_called_once_with(["usermod", "-aG", "docker", "devuser"])
         assert result is True
 
 class TestGrantSudo:
     def test_calls_add_to_group_with_sudo(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.users")
         grant_sudo("devuser")
         mock.assert_called_once_with(["usermod", "-aG", "sudo", "devuser"])
 
 class TestRevokeSudo:
     def test_fails_if_user_does_not_exist(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=False)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=False)
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = revoke_sudo("ghost")
         mock.assert_not_called()
         assert result is False
 
     def test_removes_sudo_group(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = revoke_sudo("devuser")
         mock.assert_called_once_with(["deluser", "devuser", "sudo"])
         assert result is True
@@ -117,21 +117,21 @@ class TestRevokeSudo:
 
 class TestDeleteUser:
     def test_warns_if_user_does_not_exist(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=False)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=False)
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = delete_user("ghost")
         mock.assert_not_called()
         assert result is False
 
     def test_deletes_with_home_by_default(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.users")
         delete_user("devuser")
         mock.assert_called_once_with(["deluser", "--remove-home", "devuser"])
 
     def test_deletes_keeping_home_when_requested(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.users")
         delete_user("devuser", remove_home=False)
         mock.assert_called_once_with(["deluser", "devuser"])
 
@@ -139,15 +139,15 @@ class TestDeleteUser:
 
 class TestSetupSshKey:
     def test_fails_if_user_does_not_exist(self, mocker, mock_run_command):
-        mocker.patch("modules.users.user_exists", return_value=False)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=False)
+        mock = mock_run_command("serverforge_cli.modules.users")
         result = setup_ssh_key("ghost", "ssh-ed25519 AAAA...")
         mock.assert_not_called()
         assert result is False
 
     def test_creates_ssh_dir_with_correct_permissions(self, mocker, mock_run_command, tmp_path):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock_run_command("serverforge_cli.modules.users")
 
         result = setup_ssh_key("devuser", "ssh-ed25519 AAAAtest", home_dir=str(tmp_path))
 
@@ -157,8 +157,8 @@ class TestSetupSshKey:
         assert result is True
 
     def test_writes_key_to_authorized_keys(self, mocker, mock_run_command, tmp_path):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock_run_command("serverforge_cli.modules.users")
 
         setup_ssh_key("devuser", "ssh-ed25519 AAAAtest comment", home_dir=str(tmp_path))
 
@@ -167,8 +167,8 @@ class TestSetupSshKey:
         assert "ssh-ed25519 AAAAtest comment" in content
 
     def test_authorized_keys_has_correct_permissions(self, mocker, mock_run_command, tmp_path):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock_run_command("serverforge_cli.modules.users")
 
         setup_ssh_key("devuser", "ssh-ed25519 AAAAtest", home_dir=str(tmp_path))
 
@@ -176,8 +176,8 @@ class TestSetupSshKey:
         assert oct(auth_keys.stat().st_mode)[-3:] == "600"
 
     def test_appends_multiple_keys_without_overwriting(self, mocker, mock_run_command, tmp_path):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock_run_command("serverforge_cli.modules.users")
 
         setup_ssh_key("devuser", "ssh-ed25519 AAAAfirst", home_dir=str(tmp_path))
         setup_ssh_key("devuser", "ssh-ed25519 AAAAsecond", home_dir=str(tmp_path))
@@ -188,8 +188,8 @@ class TestSetupSshKey:
         assert "AAAAsecond" in content
 
     def test_calls_chown_on_ssh_dir(self, mocker, mock_run_command, tmp_path):
-        mocker.patch("modules.users.user_exists", return_value=True)
-        mock = mock_run_command("modules.users")
+        mocker.patch("serverforge_cli.modules.users.user_exists", return_value=True)
+        mock = mock_run_command("serverforge_cli.modules.users")
 
         setup_ssh_key("devuser", "ssh-ed25519 AAAAtest", home_dir=str(tmp_path))
 

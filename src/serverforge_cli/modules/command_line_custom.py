@@ -1,5 +1,5 @@
 import os
-from utils import ok, info, error, success, step, warn, get_real_user, console
+from serverforge_cli.utils import ok, info, error, success, step, warn, get_real_user, console
 
 PROMPT_BLOCK_START = "# === PROMPT CONFIGURED BY SERVERSETUP_CLI ==="
 PROMPT_BLOCK_END   = "# ============================================="

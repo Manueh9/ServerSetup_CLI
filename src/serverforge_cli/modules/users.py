@@ -1,4 +1,4 @@
-from utils import run_command, ok, warn, error, info, success, step
+from serverforge_cli.utils import run_command, ok, warn, error, info, success, step
 import subprocess
 import os
 import re

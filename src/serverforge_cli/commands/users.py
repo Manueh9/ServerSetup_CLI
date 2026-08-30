@@ -1,9 +1,9 @@
-from modules.users import (
+from serverforge_cli.modules.users import (
     create_user, set_user_password, grant_sudo, revoke_sudo,
     delete_user, setup_ssh_key, list_users, show_user_info,
     prompt_new_user,
 )
-from utils import step, data_table, error
+from serverforge_cli.utils import step, data_table, error
 
 def register_args(parser):
     group = parser.add_argument_group("Users")

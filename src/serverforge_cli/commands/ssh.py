@@ -1,5 +1,5 @@
-from modules.ssh import install_ssh, enable_ssh, change_ssh_port, restart_ssh, check_ssh_status
-from utils import step, error
+from serverforge_cli.modules.ssh import install_ssh, enable_ssh, change_ssh_port, restart_ssh, check_ssh_status
+from serverforge_cli.utils import step, error
 
 DEFAULT_PORT = 22
 

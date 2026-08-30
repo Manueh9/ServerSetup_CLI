@@ -1,4 +1,4 @@
-from utils import run_command, ok, warn, error, info, success, get_real_user, console
+from serverforge_cli.utils import run_command, ok, warn, error, info, success, get_real_user, console
 from rich.markup import escape
 import subprocess
 import os

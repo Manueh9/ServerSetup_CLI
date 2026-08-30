@@ -1,4 +1,4 @@
-from utils import ok, warn, error, success, step, get_real_user, data_table
+from serverforge_cli.utils import ok, warn, error, success, step, get_real_user, data_table
 import subprocess
 import re
 

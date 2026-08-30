@@ -1,8 +1,8 @@
-from modules.ufw import (
+from serverforge_cli.modules.ufw import (
     install_ufw, enable_ufw, disable_ufw,
     allow_port, deny_port, delete_rule, show_status,
 )
-from utils import step
+from serverforge_cli.utils import step
 
 def register_args(parser):
     group = parser.add_argument_group("UFW")

@@ -1,8 +1,8 @@
-from modules.cron import (
+from serverforge_cli.modules.cron import (
     add_task, show_tasks, remove_task,
     remove_all_cli_tasks, clear_all_tasks,
 )
-from utils import step, error
+from serverforge_cli.utils import step, error
 
 def register_args(parser):
     group = parser.add_argument_group("Cron")

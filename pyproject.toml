@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "serverforge-cli"
+version = "1.0.0"
+description = "CLI para automatizar la configuración y hardening inicial de servidores Ubuntu"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Manuel", email = "manuel.garcia.rodriguez.010@gmail.com" }
+]
+keywords = ["devops", "cli", "server", "hardening", "ubuntu", "automation", "sysadmin"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Security",
+]
+dependencies = [
+    "rich>=13.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Manueh9/ServerSetup_CLI"
+Repository = "https://github.com/Manueh9/ServerSetup_CLI"
+Issues = "https://github.com/Manueh9/ServerSetup_CLI/issues"
+
+[project.scripts]
+sforge = "serverforge_cli.cli:main"
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-mock", "pytest-cov"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
