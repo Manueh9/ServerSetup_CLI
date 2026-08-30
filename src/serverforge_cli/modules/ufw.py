@@ -10,7 +10,7 @@ def install_ufw():
     if is_ufw_installed():
         ok("UFW is already installed")
         return
-    run_command(["apt", "install", "-y", "ufw"], require_sudo=True)
+    run_command(["apt", "install", "-y", "ufw"], requires_sudo=True)
 
 def is_ufw_active() -> bool:
     result = subprocess.run(["ufw", "status"], capture_output=True, text=True)
@@ -21,13 +21,13 @@ def enable_ufw():
         ok("UFW is already active")
         return
     # --force evita el prompt interactivo de confirmación
-    run_command(["ufw", "--force", "enable"], require_sudo=True)
+    run_command(["ufw", "--force", "enable"], requires_sudo=True)
 
 def disable_ufw():
     if not is_ufw_active():
         ok("UFW is already inactive")
         return
-    run_command(["ufw", "disable"], require_sudo=True)
+    run_command(["ufw", "disable"], requires_sudo=True)
 
 def allow_port(port: int, protocol: str = None):
     """
@@ -38,7 +38,7 @@ def allow_port(port: int, protocol: str = None):
         return False
 
     rule = f"{port}/{protocol}" if protocol else str(port)
-    run_command(["ufw", "allow", rule], require_sudo=True)
+    run_command(["ufw", "allow", rule], requires_sudo=True)
     success(f"Port {rule} allowed")
     return True
 
@@ -48,13 +48,13 @@ def deny_port(port: int, protocol: str = None):
         return False
 
     rule = f"{port}/{protocol}" if protocol else str(port)
-    run_command(["ufw", "deny", rule], require_sudo=True)
+    run_command(["ufw", "deny", rule], requires_sudo=True)
     success(f"Port {rule} denied")
     return True
 
 def delete_rule(port: int, protocol: str = None):
     rule = f"{port}/{protocol}" if protocol else str(port)
-    run_command(["ufw", "delete", "allow", rule], require_sudo=True)
+    run_command(["ufw", "delete", "allow", rule], requires_sudo=True)
     success(f"Rule for {rule} deleted")
 
 def show_status(verbose: bool = False):

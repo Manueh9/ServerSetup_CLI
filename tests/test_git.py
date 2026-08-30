@@ -25,7 +25,7 @@ class TestInstallGit:
         mocker.patch("serverforge_cli.modules.git.is_git_installed", return_value=False)
         mock = mock_run_command("serverforge_cli.modules.git")
         install_git()
-        mock.assert_called_once_with(["apt", "install", "-y", "git"], require_sudo=True)
+        mock.assert_called_once_with(["apt", "install", "-y", "git"], requires_sudo=True)
 
 class TestConfigureGit:
     def test_sets_name_and_email(self, mock_run_command):
