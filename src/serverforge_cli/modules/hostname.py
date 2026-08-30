@@ -57,7 +57,7 @@ def set_hostname(new_hostname: str) -> bool:
     step(f"Changing hostname: {current} → {new_hostname}...")
 
     # 1. Set via hostnamectl (updates /etc/hostname too)
-    run_command(["hostnamectl", "set-hostname", new_hostname])
+    run_command(["hostnamectl", "set-hostname", new_hostname], requires_sudo=True)
 
     # 2. Update /etc/hosts so 127.0.1.1 maps to the new name
     _update_hosts_file(current, new_hostname)

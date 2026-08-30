@@ -74,7 +74,7 @@ class TestSetHostname:
 
         result = set_hostname("newname")
 
-        mock.assert_called_once_with(["hostnamectl", "set-hostname", "newname"])
+        mock.assert_called_once_with(["hostnamectl", "set-hostname", "newname"], requires_sudo=True)
         assert result is True
 
         content = hosts_file.read_text()
