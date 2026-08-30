@@ -29,7 +29,7 @@ class TestInstallFail2ban:
         mocker.patch("serverforge_cli.modules.fail2ban.is_fail2ban_installed", return_value=False)
         mock = mock_run_command("serverforge_cli.modules.fail2ban")
         install_fail2ban()
-        mock.assert_called_once_with(["apt", "install", "-y", "fail2ban"])
+        mock.assert_called_once_with(["apt", "install", "-y", "fail2ban"], requires_sudo=True)
 
 # ── is_fail2ban_active ───────────────────────────────────────────
 
@@ -56,8 +56,8 @@ class TestEnableFail2ban:
         mock = mock_run_command("serverforge_cli.modules.fail2ban")
         enable_fail2ban()
         assert mock.call_count == 2
-        mock.assert_any_call(["systemctl", "enable", "fail2ban"])
-        mock.assert_any_call(["systemctl", "start", "fail2ban"])
+        mock.assert_any_call(["systemctl", "enable", "fail2ban"], requires_sudo=True)
+        mock.assert_any_call(["systemctl", "start", "fail2ban"], requires_sudo=True)
 
 class TestDisableFail2ban:
     def test_skips_if_already_inactive(self, mocker, mock_run_command):
@@ -71,8 +71,8 @@ class TestDisableFail2ban:
         mock = mock_run_command("serverforge_cli.modules.fail2ban")
         disable_fail2ban()
         assert mock.call_count == 2
-        mock.assert_any_call(["systemctl", "stop", "fail2ban"])
-        mock.assert_any_call(["systemctl", "disable", "fail2ban"])
+        mock.assert_any_call(["systemctl", "stop", "fail2ban"], requires_sudo=True)
+        mock.assert_any_call(["systemctl", "disable", "fail2ban"], requires_sudo=True)
 
 # ── configure_ssh_jail ───────────────────────────────────────────
 
@@ -118,4 +118,4 @@ class TestRestartFail2ban:
     def test_restarts_service(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.fail2ban")
         restart_fail2ban()
-        mock.assert_called_once_with(["systemctl", "restart", "fail2ban"])
+        mock.assert_called_once_with(["systemctl", "restart", "fail2ban"], requires_sudo=True)

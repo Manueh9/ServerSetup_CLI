@@ -13,7 +13,7 @@ def install_fail2ban():
     if is_fail2ban_installed():
         ok("fail2ban is already installed")
         return
-    run_command(["apt", "install", "-y", "fail2ban"])
+    run_command(["apt", "install", "-y", "fail2ban"], requires_sudo=True)
 
 def is_fail2ban_active() -> bool:
     result = subprocess.run(
@@ -26,15 +26,15 @@ def enable_fail2ban():
     if is_fail2ban_active():
         ok("fail2ban is already active")
         return
-    run_command(["systemctl", "enable", "fail2ban"])
-    run_command(["systemctl", "start", "fail2ban"])
+    run_command(["systemctl", "enable", "fail2ban"], requires_sudo=True)
+    run_command(["systemctl", "start", "fail2ban"], requires_sudo=True)
 
 def disable_fail2ban():
     if not is_fail2ban_active():
         ok("fail2ban is already inactive")
         return
-    run_command(["systemctl", "stop", "fail2ban"])
-    run_command(["systemctl", "disable", "fail2ban"])
+    run_command(["systemctl", "stop", "fail2ban"], requires_sudo=True)
+    run_command(["systemctl", "disable", "fail2ban"], requires_sudo=True)
 
 def configure_ssh_jail(max_retry: int = 5, ban_time: str = "10m", find_time: str = "10m"):
     """
@@ -61,7 +61,7 @@ findtime = {find_time}
     success(f"SSH jail configured: maxretry={max_retry}, bantime={ban_time}, findtime={find_time}")
 
 def restart_fail2ban():
-    run_command(["systemctl", "restart", "fail2ban"])
+    run_command(["systemctl", "restart", "fail2ban"], requires_sudo=True)
     ok("fail2ban restarted")
 
 def show_status(jail: str = None):
