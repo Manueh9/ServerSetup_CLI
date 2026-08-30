@@ -15,7 +15,7 @@ def install_git():
     if is_git_installed():
         ok("Git is already installed")
         return
-    run_command(["apt", "install", "-y", "git"])
+    run_command(["apt", "install", "-y", "git"], require_sudo=True)
 
 # ── User config ───────────────────────────────────────────────────
 
