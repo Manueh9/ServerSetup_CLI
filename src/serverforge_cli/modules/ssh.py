@@ -1,10 +1,7 @@
 from serverforge_cli.utils import run_command, ok, info, warn, error, success
-
+from serverforge_cli.constants import SSH_CONFIG_FILE
 import subprocess
 import re
-
-SSH_CONFIG_FILE = "/etc/ssh/sshd_config"
-
 
 def install_ssh():
     run_command(["apt", "install", "-y", "openssh-server"])

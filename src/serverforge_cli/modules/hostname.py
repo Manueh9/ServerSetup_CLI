@@ -1,8 +1,7 @@
 from serverforge_cli.utils import run_command, ok, warn, error, info, success, step
+from serverforge_cli.constants import HOSTS_FILE
 import subprocess
 import re
-
-HOSTS_FILE = "/etc/hosts"
 
 def prompt_hostname_change() -> str | None:
     """

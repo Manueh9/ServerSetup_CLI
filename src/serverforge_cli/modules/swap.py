@@ -1,10 +1,8 @@
 from serverforge_cli.utils import run_command, ok, warn, error, info, success, step, status_table, usage_bar
+from serverforge_cli.constants import SWAP_FILE, FSTAB_FILE
 import subprocess
 import re
 import os
-
-SWAP_FILE = "/swapfile"
-FSTAB_FILE = "/etc/fstab"
 
 def get_swap_info() -> dict:
     """Returns current swap size and usage from /proc/meminfo."""

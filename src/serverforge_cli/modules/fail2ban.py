@@ -1,9 +1,8 @@
 from serverforge_cli.utils import run_command, ok, warn, error, info, success, step, status_table
+from serverforge_cli.constants import JAIL_LOCAL_FILE
 import subprocess
 import os
 import re
-
-JAIL_LOCAL_FILE = "/etc/fail2ban/jail.local"
 
 def is_fail2ban_installed() -> bool:
     result = subprocess.run(["which", "fail2ban-client"], capture_output=True, text=True)
