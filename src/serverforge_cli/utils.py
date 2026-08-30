@@ -94,14 +94,13 @@ def warn_if_root_for_user_config(scope: str, text) -> bool:
 # ── System command runner ─────────────────────────────────────────
 
 def run_command(command, requires_sudo=False):
-        """
+    """
     Execute a system command.
 
     Args:
         command: Command and arguments as a list.
-        privileged: If True, execute with sudo when not already running as root.
+        requires_sudo: If True, execute with sudo when not already running as root.
     """
-
     if requires_sudo and not is_running_as_root():
         command = ["sudo"] + command
 
