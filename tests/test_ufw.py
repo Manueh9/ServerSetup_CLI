@@ -29,7 +29,7 @@ class TestInstallUfw:
         mocker.patch("serverforge_cli.modules.ufw.is_ufw_installed", return_value=False)
         mock = mock_run_command("serverforge_cli.modules.ufw")
         install_ufw()
-        mock.assert_called_once_with(["apt", "install", "-y", "ufw"])
+        mock.assert_called_once_with(["apt", "install", "-y", "ufw"], require_sudo=True)
 
 # ── is_ufw_active ────────────────────────────────────────────────
 
@@ -55,7 +55,7 @@ class TestEnableUfw:
         mocker.patch("serverforge_cli.modules.ufw.is_ufw_active", return_value=False)
         mock = mock_run_command("serverforge_cli.modules.ufw")
         enable_ufw()
-        mock.assert_called_once_with(["ufw", "--force", "enable"])
+        mock.assert_called_once_with(["ufw", "--force", "enable"], require_sudo=True)
 
 class TestDisableUfw:
     def test_skips_if_already_inactive(self, mocker, mock_run_command):
@@ -68,7 +68,7 @@ class TestDisableUfw:
         mocker.patch("serverforge_cli.modules.ufw.is_ufw_active", return_value=True)
         mock = mock_run_command("serverforge_cli.modules.ufw")
         disable_ufw()
-        mock.assert_called_once_with(["ufw", "disable"])
+        mock.assert_called_once_with(["ufw", "disable"], require_sudo=True)
 
 # ── allow_port ───────────────────────────────────────────────────
 
@@ -76,18 +76,18 @@ class TestAllowPort:
     def test_allows_port_without_protocol(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
         result = allow_port(22)
-        mock.assert_called_once_with(["ufw", "allow", "22"])
+        mock.assert_called_once_with(["ufw", "allow", "22"], require_sudo=True)
         assert result is True
 
     def test_allows_port_with_tcp_protocol(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
         allow_port(22, "tcp")
-        mock.assert_called_once_with(["ufw", "allow", "22/tcp"])
+        mock.assert_called_once_with(["ufw", "allow", "22/tcp"], require_sudo=True)
 
     def test_allows_port_with_udp_protocol(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
         allow_port(53, "udp")
-        mock.assert_called_once_with(["ufw", "allow", "53/udp"])
+        mock.assert_called_once_with(["ufw", "allow", "53/udp"], require_sudo=True)
 
     def test_rejects_port_too_low(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
@@ -107,12 +107,12 @@ class TestDenyPort:
     def test_denies_port_without_protocol(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
         deny_port(8080)
-        mock.assert_called_once_with(["ufw", "deny", "8080"])
+        mock.assert_called_once_with(["ufw", "deny", "8080"], require_sudo=True)
 
     def test_denies_port_with_protocol(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
         deny_port(8080, "tcp")
-        mock.assert_called_once_with(["ufw", "deny", "8080/tcp"])
+        mock.assert_called_once_with(["ufw", "deny", "8080/tcp"], require_sudo=True)
 
     def test_rejects_invalid_port(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
@@ -126,9 +126,9 @@ class TestDeleteRule:
     def test_deletes_rule_without_protocol(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
         delete_rule(22)
-        mock.assert_called_once_with(["ufw", "delete", "allow", "22"])
+        mock.assert_called_once_with(["ufw", "delete", "allow", "22"], require_sudo=True)
 
     def test_deletes_rule_with_protocol(self, mock_run_command):
         mock = mock_run_command("serverforge_cli.modules.ufw")
         delete_rule(22, "tcp")
-        mock.assert_called_once_with(["ufw", "delete", "allow", "22/tcp"])
+        mock.assert_called_once_with(["ufw", "delete", "allow", "22/tcp"], require_sudo=True)
