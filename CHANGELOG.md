@@ -9,9 +9,28 @@ y este proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/
 
 ## [Sin publicar]
 
+### Añadido
+- Validación del sistema operativo al arrancar (`is_supported_os`): si no es
+  Debian/Ubuntu, la CLI aborta con un mensaje claro antes de ejecutar ningún
+  comando, en vez de fallar a medias más adelante con errores confusos
+  (`apt`, `ufw` y `systemctl` no existen en otras distros).
+- Validación de `sshd_config` (`sshd -t`) antes de reiniciar el servicio SSH
+  tras cambiar de puerto: si la configuración queda inválida, no se reinicia
+  el servicio y se conserva el acceso remoto con la configuración anterior.
+
 ### Corregido
 - El texto de uso de `--help` (y el `prog` mostrado en `--help <módulo>`)
   seguía mostrando `cli.py` en vez de `sforge`.
+- `--protect-ssh` (fail2ban) lanzaba una excepción sin controlar si se
+  ejecutaba sin permisos suficientes para escribir `jail.local`, y aun así
+  intentaba reiniciar el servicio con una configuración que no llegó a
+  escribirse. Ahora se informa el error de permisos y no se reinicia el
+  servicio si la escritura falla.
+- `--create-user ... --user-password ...` aplicaba la contraseña con
+  `chpasswd` sin pasar por el runner de comandos centralizado ni solicitar
+  privilegios de root, por lo que fallaba en silencio al ejecutarse sin
+  `sudo`. Ahora usa el mismo runner que el resto de comandos, con
+  `sudo` cuando hace falta.
 
 ## [1.0.0] - 2026-08-22
 

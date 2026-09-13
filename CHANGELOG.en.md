@@ -9,9 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- OS validation on startup (`is_supported_os`): if the host isn't
+  Debian/Ubuntu-based, the CLI now aborts with a clear message before
+  running any command, instead of failing halfway through with confusing
+  errors (`apt`, `ufw` and `systemctl` don't exist on other distros).
+- `sshd_config` validation (`sshd -t`) before restarting the SSH service
+  after a port change: if the resulting config is invalid, the service is
+  not restarted and remote access is preserved with the previous config.
+
 ### Fixed
 - The `--help` usage text (and the `prog` shown by `--help <module>`) still
   read `cli.py` instead of `sforge`.
+- `--protect-ssh` (fail2ban) raised an unhandled exception when run without
+  enough permissions to write `jail.local`, and still tried to restart the
+  service with a config that was never written. It now reports a permission
+  error and skips the restart when the write fails.
+- `--create-user ... --user-password ...` applied the password via
+  `chpasswd` outside the centralized command runner and without requesting
+  root privileges, so it silently failed when run without `sudo`. It now
+  goes through the same runner as every other command, adding `sudo` when
+  needed.
 
 ## [1.0.0] - 2026-08-22
 

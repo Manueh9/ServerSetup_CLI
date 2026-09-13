@@ -48,7 +48,9 @@ The repository also includes `install.sh` (Linux/macOS) and `install.bat`
 > Ubuntu/Debian-specific tools (`apt`, `ufw`, `systemctl`, `fail2ban`...).
 > Installing it on Windows or macOS is only useful to explore the CLI or to
 > manage a remote server over SSH: to actually apply the configuration you
-> need to run `sforge` **on the target Linux server itself**.
+> need to run `sforge` **on the target Linux server itself**. On a
+> non-Debian/Ubuntu system, `sforge` detects this on startup and aborts
+> with a clear message instead of failing halfway through.
 
 ## Full setup
 
@@ -280,6 +282,17 @@ and `develop`.
 
 - **UFW**: the `--all` flow allows the SSH port *before* enabling the
   firewall, so it doesn't lock you out of remote access.
+- **SSH**: after changing the port, `sshd_config` is validated with
+  `sshd -t` before restarting the service; if the resulting config is
+  invalid, the service is not restarted and remote access is preserved with
+  the previous configuration.
+- **Operating system**: on startup, `sforge` checks that the host is
+  Debian/Ubuntu-based before running any command, and aborts with a clear
+  message otherwise.
+- **Permissions**: commands that need elevated privileges (including
+  writing configuration files and `chpasswd`) go through the same
+  centralized runner with `sudo`; permission errors are reported cleanly
+  instead of crashing with an unhandled exception.
 - **Privileged ports**: a warning is shown when opening ports below 1024.
 - **Validation**: usernames, hostnames, ports, swap sizes and cron schedules
   are all validated before being applied.

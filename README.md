@@ -49,7 +49,8 @@ El repositorio incluye también `install.sh` (Linux/macOS) e `install.bat`
 > `systemctl`, `fail2ban`...). Instalarlo en Windows o macOS solo sirve para
 > explorar la CLI o para gestionar un servidor remoto por SSH: para aplicar
 > la configuración hace falta ejecutar `sforge` **en el propio servidor
-> Linux**.
+> Linux**. Si se ejecuta en un sistema no Debian/Ubuntu, `sforge` lo detecta
+> al arrancar y aborta con un mensaje claro en vez de fallar a medias.
 
 ## Setup completo
 
@@ -280,6 +281,17 @@ en cada push a `main` y `develop`.
 
 - **UFW**: el flujo `--all` permite el puerto SSH *antes* de activar el firewall,
   para no bloquear el acceso remoto al servidor.
+- **SSH**: tras cambiar el puerto, `sshd_config` se valida con `sshd -t` antes
+  de reiniciar el servicio; si la configuración quedó inválida, no se reinicia
+  y se conserva el acceso remoto con la configuración anterior.
+- **Sistema operativo**: al arrancar, `sforge` comprueba que el host sea
+  Debian/Ubuntu antes de ejecutar cualquier comando, y aborta con un mensaje
+  claro en caso contrario.
+- **Permisos**: los comandos que necesitan privilegios (incluyendo escritura
+  de ficheros de configuración y `chpasswd`) pasan por el mismo runner
+  centralizado con `sudo`; los errores de permisos se informan de forma
+  controlada en vez de interrumpir la ejecución con una excepción sin
+  gestionar.
 - **Puertos privilegiados**: se avisa al abrir puertos por debajo de 1024.
 - **Validación**: usernames, hostnames, puertos, tamaños de swap y esquemas cron
   se validan antes de aplicarse.
