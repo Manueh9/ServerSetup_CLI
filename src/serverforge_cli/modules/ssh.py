@@ -64,6 +64,15 @@ def _verify_config_port(expected_port: int):
                 return
     warn("No active 'Port' line found in config")
 
+def validate_ssh_config() -> tuple[bool, str]:
+    """
+    Checks sshd_config syntax via 'sshd -t' without applying anything.
+    Returns (is_valid, error_message). Used to avoid restarting into a broken config
+    and losing remote SSH access.
+    """
+    result = subprocess.run(["sshd", "-t"], capture_output=True, text=True)
+    return result.returncode == 0, result.stderr.strip()
+
 def restart_ssh():
     run_command(["systemctl", "stop", "ssh.socket"], requires_sudo=True)
     run_command(["systemctl", "stop", "ssh"], requires_sudo=True)

@@ -6,6 +6,7 @@ from serverforge_cli.modules.ssh import (
     _verify_config_port,
     install_ssh,
     enable_ssh,
+    validate_ssh_config,
     restart_ssh,
     check_ssh_status,
 )
@@ -175,6 +176,26 @@ class TestRestartSSH:
             call(["systemctl", "start", "ssh.socket"], requires_sudo=True),
             call(["systemctl", "start", "ssh"], requires_sudo=True),
         ]
+
+
+class TestValidateSSHConfig:
+    def test_valid_config_returns_true(self, mock_subprocess_run):
+        mock_subprocess_run.return_value = SimpleNamespace(returncode=0, stderr="")
+
+        is_valid, message = validate_ssh_config()
+
+        assert is_valid is True
+        assert message == ""
+
+    def test_invalid_config_returns_false_with_message(self, mock_subprocess_run):
+        mock_subprocess_run.return_value = SimpleNamespace(
+            returncode=1, stderr="/etc/ssh/sshd_config: line 42: Bad configuration option\n"
+        )
+
+        is_valid, message = validate_ssh_config()
+
+        assert is_valid is False
+        assert "Bad configuration option" in message
 
 
 class TestCheckSSHStatus:

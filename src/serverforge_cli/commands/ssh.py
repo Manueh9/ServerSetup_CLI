@@ -1,4 +1,6 @@
-from serverforge_cli.modules.ssh import install_ssh, enable_ssh, change_ssh_port, restart_ssh, check_ssh_status
+from serverforge_cli.modules.ssh import (
+    install_ssh, enable_ssh, change_ssh_port, validate_ssh_config, restart_ssh, check_ssh_status,
+)
 from serverforge_cli.utils import step, error
 
 DEFAULT_PORT = 22
@@ -34,8 +36,14 @@ def _install_and_configure(port=None):
         step(f"Changing SSH port to {port}...")
         change_ssh_port(port)
 
-        step("Restarting SSH service...")
-        restart_ssh()
+        step("Validating SSH configuration...")
+        is_valid, message = validate_ssh_config()
+        if is_valid:
+            step("Restarting SSH service...")
+            restart_ssh()
+        else:
+            error("sshd_config is invalid — skipping restart to avoid losing SSH access:")
+            error(message)
 
     step("Checking SSH status...")
     check_ssh_status()
