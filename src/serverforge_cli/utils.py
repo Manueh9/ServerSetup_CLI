@@ -59,6 +59,19 @@ def make_table(title: str, columns: list[str]) -> Table:
 def is_running_as_root() -> bool:
     return os.geteuid() == 0
 
+def is_supported_os(os_release_file: str = "/etc/os-release") -> bool:
+    """
+    Checks whether the host is a Debian/Ubuntu-based system.
+    This tool relies on apt, ufw and systemd throughout, so anything else is unsupported.
+    """
+    try:
+        with open(os_release_file, "r") as f:
+            content = f.read().lower()
+    except (FileNotFoundError, PermissionError):
+        return False
+
+    return "debian" in content
+
 def get_real_user() -> tuple[str, str]:
     """
     Returns (username, home) of the real user behind sudo.
@@ -93,13 +106,14 @@ def warn_if_root_for_user_config(scope: str, text) -> bool:
 
 # ── System command runner ─────────────────────────────────────────
 
-def run_command(command, requires_sudo=False):
+def run_command(command, requires_sudo=False, input_text=None):
     """
     Execute a system command.
 
     Args:
         command: Command and arguments as a list.
         requires_sudo: If True, execute with sudo when not already running as root.
+        input_text: If given, piped to the command's stdin (e.g. for chpasswd).
     """
     if requires_sudo and not is_running_as_root():
         command = ["sudo"] + command
@@ -112,7 +126,8 @@ def run_command(command, requires_sudo=False):
                 command,
                 check=True,
                 text=True,
-                capture_output=True
+                capture_output=True,
+                input=input_text
             )
 
         console.print(f"[bold green]✔[/bold green] {cmd_str}")

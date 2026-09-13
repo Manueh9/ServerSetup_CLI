@@ -1,7 +1,7 @@
 import argparse
 import sys
 from rich.table import Table
-from serverforge_cli.utils import banner, phase_header, console, error
+from serverforge_cli.utils import banner, phase_header, console, error, is_supported_os
 from serverforge_cli.commands import MODULES
 from serverforge_cli.commands import system              as cmd_system
 from serverforge_cli.commands import ssh                 as cmd_ssh
@@ -98,6 +98,10 @@ def main():
         else:
             print_overview_help()
         return
+
+    if not is_supported_os():
+        error("This tool only supports Debian/Ubuntu-based systems (apt/systemd required).")
+        sys.exit(1)
 
     parser = argparse.ArgumentParser(description="Server Setup CLI", add_help=False)
     parser.add_argument("--all", action="store_true", help="Run full setup (all phases)")

@@ -1,6 +1,6 @@
 import pytest
 from serverforge_cli.modules.users import (
-    is_valid_username, user_exists, create_user,
+    is_valid_username, user_exists, create_user, set_user_password,
     add_to_group, grant_sudo, revoke_sudo, delete_user,
     setup_ssh_key, list_users, prompt_new_user,
 )
@@ -73,6 +73,18 @@ class TestCreateUser:
         mock_run_command("serverforge_cli.modules.users")
         result = create_user("devuser")
         assert result is False
+
+# ── set_user_password ────────────────────────────────────────────
+
+class TestSetUserPassword:
+    def test_sets_password_via_chpasswd_with_sudo(self, mock_run_command):
+        mock = mock_run_command("serverforge_cli.modules.users")
+
+        set_user_password("devuser", "s3cret")
+
+        mock.assert_called_once_with(
+            ["chpasswd"], requires_sudo=True, input_text="devuser:s3cret"
+        )
 
 # ── add_to_group / grant_sudo / revoke_sudo ──────────────────────
 

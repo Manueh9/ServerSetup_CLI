@@ -38,17 +38,10 @@ def create_user(username: str) -> bool:
         return False
 
 def set_user_password(username: str, password: str):
-    """Sets a password non-interactively via chpasswd."""
+    """Sets a password non-interactively via chpasswd (requires root)."""
     step(f"Setting password for '{username}'...")
-    proc = subprocess.run(
-        ["chpasswd"],
-        input=f"{username}:{password}",
-        capture_output=True, text=True
-    )
-    if proc.returncode == 0:
-        success(f"Password set for '{username}'")
-    else:
-        error(f"Failed to set password: {proc.stderr.strip()}")
+    run_command(["chpasswd"], requires_sudo=True, input_text=f"{username}:{password}")
+    success(f"Password set for '{username}'")
 
 def add_to_group(username: str, group: str):
     if not user_exists(username):
