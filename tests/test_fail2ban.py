@@ -112,6 +112,20 @@ class TestConfigureSshJail:
         assert "old content" not in content
         assert "maxretry = 10" in content
 
+    def test_returns_true_on_success(self, tmp_path, monkeypatch):
+        jail_file = tmp_path / "jail.local"
+        monkeypatch.setattr("serverforge_cli.modules.fail2ban.JAIL_LOCAL_FILE", str(jail_file))
+
+        assert configure_ssh_jail() is True
+
+    def test_returns_false_and_reports_error_on_permission_denied(self, mocker, capsys):
+        mocker.patch("builtins.open", side_effect=PermissionError())
+
+        result = configure_ssh_jail()
+
+        assert result is False
+        assert "Permission denied" in capsys.readouterr().out
+
 # ── restart_fail2ban ─────────────────────────────────────────────
 
 class TestRestartFail2ban:

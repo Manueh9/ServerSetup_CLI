@@ -35,7 +35,7 @@ def disable_fail2ban():
     run_command(["systemctl", "stop", "fail2ban"], requires_sudo=True)
     run_command(["systemctl", "disable", "fail2ban"], requires_sudo=True)
 
-def configure_ssh_jail(max_retry: int = 5, ban_time: str = "10m", find_time: str = "10m"):
+def configure_ssh_jail(max_retry: int = 5, ban_time: str = "10m", find_time: str = "10m") -> bool:
     """
     Creates/updates jail.local with SSH protection.
     max_retry: failed attempts before ban
@@ -54,10 +54,15 @@ bantime = {ban_time}
 findtime = {find_time}
 """
 
-    with open(JAIL_LOCAL_FILE, "w", encoding="utf-8") as f:
-        f.write(config)
+    try:
+        with open(JAIL_LOCAL_FILE, "w", encoding="utf-8") as f:
+            f.write(config)
+    except PermissionError:
+        error(f"Permission denied: cannot edit {JAIL_LOCAL_FILE}. Run with sudo.")
+        return False
 
     success(f"SSH jail configured: maxretry={max_retry}, bantime={ban_time}, findtime={find_time}")
+    return True
 
 def restart_fail2ban():
     run_command(["systemctl", "restart", "fail2ban"], requires_sudo=True)

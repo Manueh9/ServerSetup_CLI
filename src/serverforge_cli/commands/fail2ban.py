@@ -30,9 +30,9 @@ def handle(args):
         install_fail2ban()
 
     if args.protect_ssh:
-        configure_ssh_jail(args.max_retry, args.ban_time, args.find_time)
-        step("Restarting fail2ban to apply changes...")
-        restart_fail2ban()
+        if configure_ssh_jail(args.max_retry, args.ban_time, args.find_time):
+            step("Restarting fail2ban to apply changes...")
+            restart_fail2ban()
 
     if args.enable_fail2ban:
         step("Enabling fail2ban...")
