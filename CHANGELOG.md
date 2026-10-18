@@ -9,6 +9,8 @@ y este proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/
 
 ## [Sin publicar]
 
+## [1.1.0] - 2026-10-18
+
 ### Añadido
 - Validación del sistema operativo al arrancar (`is_supported_os`): si no es
   Debian/Ubuntu, la CLI aborta con un mensaje claro antes de ejecutar ningún
@@ -77,5 +79,6 @@ y este proyecto se adhiere a [Versionado Semántico](https://semver.org/lang/es/
   entorno virtual + instalación editable), dejando la instalación vía PyPI
   como vía principal para usuarios finales.
 
-[Sin publicar]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.0.0...HEAD
+[Sin publicar]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Manueh9/ServerSetup_CLI/releases/tag/v1.0.0

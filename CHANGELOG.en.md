@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-18
+
 ### Added
 - OS validation on startup (`is_supported_os`): if the host isn't
   Debian/Ubuntu-based, the CLI now aborts with a clear message before
@@ -76,5 +78,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   + editable install), with the PyPI install now the primary path for end
   users.
 
-[Unreleased]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Manueh9/ServerSetup_CLI/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/Manueh9/ServerSetup_CLI/releases/tag/v1.0.0
