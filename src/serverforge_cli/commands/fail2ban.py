@@ -49,5 +49,6 @@ def handle(args):
 def run_all():
     """Called by --all. Installs fail2ban and protects SSH with sensible defaults."""
     install_fail2ban()
-    configure_ssh_jail()
     enable_fail2ban()
+    if configure_ssh_jail():
+        restart_fail2ban()
