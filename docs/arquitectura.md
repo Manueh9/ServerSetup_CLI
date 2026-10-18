@@ -172,9 +172,12 @@ No hace falta tocar `cli.py` más allá de registrarlo en `MODULES`/`PHASES`/
 ## 5. Convenciones de testing
 
 - Los tests viven en `tests/`, un archivo `test_<módulo>.py` por cada
-  `modules/<módulo>.py` (11 archivos, correspondencia 1:1). Actualmente **no**
-  hay tests dedicados para la capa `commands/` (parseo/despacho de argparse)
-  ni para `cli.py` (orquestación de `--all`, ayuda de dos niveles).
+  `modules/<módulo>.py` (11 archivos, correspondencia 1:1), más
+  `test_cli.py` (orquestación de `--all`, ayuda de dos niveles) y tests
+  dedicados para la capa `commands/` de los módulos `ssh` y `fail2ban`
+  (`test_commands_ssh.py`, `test_commands_fail2ban.py`). Al resto de
+  `commands/*.py` (system, git, users, ufw, hostname, cron, swap, timezone,
+  command_line_custom) todavía les falta ese test dedicado.
 - `tests/conftest.py` define dos fixtures:
   - `mock_run_command(module_path)` — parchea `run_command` en el namespace
     del módulo indicado. Uso: `mock_run_command("serverforge_cli.modules.system")`.
