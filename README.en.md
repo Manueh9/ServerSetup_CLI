@@ -46,11 +46,13 @@ The repository also includes `install.sh` (Linux/macOS) and `install.bat`
 
 > ⚠️ The package installs on any operating system, but the modules run
 > Ubuntu/Debian-specific tools (`apt`, `ufw`, `systemctl`, `fail2ban`...).
-> Installing it on Windows or macOS is only useful to explore the CLI or to
-> manage a remote server over SSH: to actually apply the configuration you
-> need to run `sforge` **on the target Linux server itself**. On a
-> non-Debian/Ubuntu system, `sforge` detects this on startup and aborts
-> with a clear message instead of failing halfway through.
+> Installing it on Windows or macOS is only useful to see the help
+> (`sforge --help`) or run the test suite: to actually apply the
+> configuration you need to install and run `sforge` **on the target Linux
+> server itself** (for example, after connecting to it over SSH). `sforge`
+> does not manage remote servers by itself. On a non-Debian/Ubuntu system,
+> `sforge` detects this on startup and aborts with a clear message instead
+> of failing halfway through.
 
 ## Full setup
 
